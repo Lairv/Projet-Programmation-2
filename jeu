@@ -9,7 +9,8 @@ class entité
 	sous class tourelles
 
 	- (cannon * pos * angle) list
-	- reload
+	- reload level
+	- current reload
 	- bullet penetration
 	- bullet damage
 	- bullet speed
@@ -20,29 +21,40 @@ class entité
 			
 		sous sous class sniper
 
+		sous sous class overseer
+	
+		- drone limit
+		- current drone number
 
 	sous class ennemi
 
 	- vitesse frame / px
 	- recompense
 
-	sous class missile
+	sous class ammo
 
-	- direction
-	- vitesse
-	- provenance
-	- lifespan
+		- provenance (cannon)
+		- direction
+		- vitesse
 
-	sous class drone
+		sous sous class missile
 
-	- direction
-	- vitesse
-	- provenance
-	- cible
+		- lifespan
+
+		sous sous class drone
+
+		- cible
+
+
+class cannon
+
+- bullet penetration
+- bullet damage
+- ammo shoot (string)
+
 
 
 object jeu
 
 	- liste entité
 	- terrain (hauteur, longueur)
-	- 
