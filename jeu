@@ -1,0 +1,48 @@
+class entité
+
+- equipe
+- image
+- pv
+- position
+- dégats
+
+	sous class tourelles
+
+	- (cannon * pos * angle) list
+	- reload
+	- bullet penetration
+	- bullet damage
+	- bullet speed
+	- points
+	- évolutions ()
+
+		sous sous class tank
+			
+		sous sous class sniper
+
+
+	sous class ennemi
+
+	- vitesse frame / px
+	- recompense
+
+	sous class missile
+
+	- direction
+	- vitesse
+	- provenance
+	- lifespan
+
+	sous class drone
+
+	- direction
+	- vitesse
+	- provenance
+	- cible
+
+
+object jeu
+
+	- liste entité
+	- terrain (hauteur, longueur)
+	- 
