@@ -1,19 +1,21 @@
+run
 compile
+run
+run*
+run
+clear
+run
+quit
+exit
+run
+bgRUn
+bgRun
+last Compile
+last Compile / bgRun
+run
+last Compile / bgRun
 run
 compile
 run
 compile
 run
-compile
-run
-compile
-run
-compile
-run
-compile
-run
-compile
-run
-compile
-run
-q
