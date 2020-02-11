@@ -1,4 +1,5 @@
-import javax.imageio.ImageIO;
+import javax.imageio.ImageIO
+import scala.math
 
 trait Ennemy extends Entity
 {
@@ -6,11 +7,12 @@ trait Ennemy extends Entity
 	var m_speed:Double
 	var m_target:Vect
 	var m_currPivP:Int
+	var m_type = "ennemy"
 }
 
 class YSquare extends Ennemy
 {
-	var m_sprite = ImageIO.read(getClass().getResource("paz.png"))
+	var m_sprite = ImageIO.read(getClass().getResource("sch.png"))
 	var m_maxHp = 100
 	var m_hp = 100
 	var m_pos = new Vect(0,0)
@@ -19,6 +21,7 @@ class YSquare extends Ennemy
 	var m_reward = 1
 	var m_speed = 8.0
 	var m_currPivP = 0
+	var m_rotation = 0
 	
 	def init(g:Game):Unit =
 	{
@@ -42,7 +45,6 @@ class YSquare extends Ennemy
 					m_hp = 0
 				case Some(p) =>
 					m_target = p
-					println(m_target.x + " , " + m_target.y+ " , " + m_pos.x+ " , " + m_pos.y)
 					m_currPivP += 1
 			}
 		}
