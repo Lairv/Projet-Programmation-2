@@ -31,9 +31,9 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 	var m_random = scala.util.Random
 	
 	// A modifier en fonction de la carte 
-	var m_pivotPoints = Array(Array(new Vect(-1,3),new Vect(-1,4),new Vect(-1,5)),
-							  Array(new Vect(15,3),new Vect(14,4),new Vect(13,5)),
-							  Array(new Vect(13,m_rows+1),new Vect(14,m_rows+1),new Vect(15,m_rows+1)))
+	var m_pivotPoints = Array(Array(new Vect(-1,3),new Vect(-1,5)),
+							  Array(new Vect(15,3),new Vect(13,5)),
+							  Array(new Vect(13,m_rows+1),new Vect(15,m_rows+1)))
 	
 	preferredSize = new Dimension(m_cols * cellSize, m_rows * cellSize)
 	
@@ -45,7 +45,8 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 		}
 		else
 		{
-			Some (m_pivotPoints(currPivP+1)(m_random.nextInt(m_pivotPoints(currPivP+1).length))*m_cellSize)
+			var t = m_random.nextFloat.toDouble
+			Some ((m_pivotPoints(currPivP+1)(0)*m_cellSize)*t+(m_pivotPoints(currPivP+1)(1)*m_cellSize)*(1-t))
 		}
 	}
 	

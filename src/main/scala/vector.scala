@@ -13,7 +13,7 @@ class Vect(m_x:Int,m_y:Int)
 	{
 		return ((x == that.x) && (y == that.y))
 	}
-	def *(lambda : Float):Vect =
+	def *(lambda : Double):Vect =
 	{
 		new Vect((x*lambda).toInt,(y*lambda).toInt)
 	}
@@ -21,9 +21,8 @@ class Vect(m_x:Int,m_y:Int)
 	{
 		new Vect(x - that.x, y - that.y)
 	}
-	def length():Int =
+	def length():Double =
 	{
-		(math.sqrt(x*x+y*y)).toInt
+		(math.sqrt(x*x+y*y))
 	}
 }
-
