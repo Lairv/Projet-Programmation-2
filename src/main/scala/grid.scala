@@ -134,11 +134,26 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 		m_entities = entityList
 	}
 	
+	def drawTurretCannons(g : Graphics2D, t : Turret) : Unit =
+	{
+		g.setColor(Color.red)
+		for (i <- t.m_cannonList)
+		{
+			g.drawOval(t.m_pos.x + i.m_currentOffset.x -5,
+					   t.m_pos.y + i.m_currentOffset.y -5,
+					   10 , 10)
+			g.drawLine(t.m_pos.x + i.m_currentOffset.x,
+					   t.m_pos.y + i.m_currentOffset.y,
+					   t.m_pos.x + i.m_currentOffset.x + i.m_currentDirection.x,
+					   t.m_pos.y + i.m_currentOffset.y + i.m_currentDirection.y)
+		}
+	}
+	
 	def drawEntities(g : Graphics2D) : Unit =
 	{
 		for (i <- m_entities)
 		{
-			if (i.m_rotation == 0)
+			if (i.m_rotation == 0) // Si l'entité n'est pas tournée on ne calcule pas de rotation, petit gain de performances
 			{
 				g.drawImage(i.m_sprite,i.m_pos.x - i.m_offset.x,i.m_pos.y - i.m_offset.y, null)
 			}
@@ -151,6 +166,12 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 				at.translate(-i.m_offset.x, -i.m_offset.y)
 				
 				g.drawImage(i.m_sprite,at,null)
+			}
+			
+			// Partie pour dessiner les cannons
+			if (i.m_type == "turret")
+			{
+				drawTurretCannons(g,i.asInstanceOf[Turret])
 			}
 		}
 	}

@@ -10,46 +10,19 @@ trait Turret extends Entity
 	var m_bulletSpeed:Int
 	var m_range:Int
 	var m_evolution:String
+	var m_cannonList:Array[Cannon] 
 	var m_type = "turret"
-}
-
-class Tank extends Turret
-{
-	var m_sprite = ImageIO.read(getClass().getResource("tank.png"))
-	var m_maxHp = 100
-	var m_hp = 100
-	var m_pos = new Vect(0,0)
-	var m_offset = new Vect(50,50)
-
-	var m_reloadSpeed = 10
-	var m_currentReload = 0
-	var m_bulletPenetration = 0
-	var m_bulletDamage = 0
-	var m_bulletSpeed = 0
-	var m_range = 500
-	var m_rotation = 0
-	var m_evolution = "tank"
-	
-	def setPosition(p : Vect) =
-	{
-		m_pos = p
-	}
 	
 	def rotateToward(e : Entity):Unit =
 	{	
-		var inter : Vect = (m_pos-e.m_pos)
-		println(inter.x + " " + inter.y)
-		if (inter.x < 0 && inter.y < 0)
+		var inter : Vect = (e.m_pos-m_pos)
+		if (inter.y > 0)
 		{
-			m_rotation = math.Pi + math.atan(inter.y/inter.x)
-		}
-		if (inter.x < 0 && inter.y > 0)
-		{
-			m_rotation = math.Pi - math.atan(inter.y/inter.x)
+			m_rotation = math.acos(inter.x/inter.length)
 		}
 		else
 		{
-			m_rotation = math.atan(inter.y/inter.x)
+			m_rotation = - math.acos(inter.x/inter.length)		
 		}
 	}
 	
@@ -61,9 +34,57 @@ class Tank extends Turret
 			case None =>
 				{}
 			case Some(e) =>
+				// La tourelle se tourne vers la cible
 				rotateToward(e)
+				
+				// Les cannons se tournent vers la cible
+				for (i <- m_cannonList)
+				{
+					i.getNewDirection(this)
+				}
 				
 				// A FAIRE : Tirer sur la cible 
 		}
 	}
+}
+
+class Tank(p : Vect)extends Turret
+{
+	var m_sprite = ImageIO.read(getClass().getResource("tank.png"))
+	var m_maxHp = 100
+	var m_hp = 100
+	var m_pos = p
+	var m_offset = new Vect(60,60)
+
+	var m_cannonList = Array(new Cannon(new Vect(40,0), new Vect(50,0), "ammo"))
+
+	var m_reloadSpeed = 10
+	var m_currentReload = 0
+	var m_bulletPenetration = 0
+	var m_bulletDamage = 0
+	var m_bulletSpeed = 0
+	var m_range = 200
+	var m_rotation = 0
+	var m_evolution = "tank"
+}
+
+class Tween(p : Vect)extends Turret
+{
+	var m_sprite = ImageIO.read(getClass().getResource("tween.png"))
+	var m_maxHp = 100
+	var m_hp = 100
+	var m_pos = p
+	var m_offset = new Vect(60,60)
+
+	var m_cannonList = Array(new Cannon(new Vect(40,15), new Vect(50,0), "ammo"),
+							 new Cannon(new Vect(40,-15), new Vect(50,0), "ammo"))
+
+	var m_reloadSpeed = 10
+	var m_currentReload = 0
+	var m_bulletPenetration = 0
+	var m_bulletDamage = 0
+	var m_bulletSpeed = 0
+	var m_range = 200
+	var m_rotation = 0
+	var m_evolution = "tank"
 }
