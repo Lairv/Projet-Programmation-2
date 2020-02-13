@@ -3,8 +3,6 @@ import scala.math
 
 trait Turret extends Entity
 {
-	var m_reloadSpeed:Int
-	var m_currentReload:Int
 	var m_bulletPenetration:Int
 	var m_bulletDamage:Int
 	var m_bulletSpeed:Int
@@ -41,6 +39,7 @@ trait Turret extends Entity
 				for (i <- m_cannonList)
 				{
 					i.getNewDirection(this)
+					i.shootAmmo(g,this,e)
 				}
 				
 				// A FAIRE : Tirer sur la cible 
@@ -58,12 +57,11 @@ class Tank(p : Vect)extends Turret
 
 	var m_cannonList = Array(new Cannon(new Vect(40,0), new Vect(50,0), "ammo"))
 
-	var m_reloadSpeed = 10
-	var m_currentReload = 0
+	var m_radius = 60
 	var m_bulletPenetration = 0
 	var m_bulletDamage = 0
 	var m_bulletSpeed = 0
-	var m_range = 200
+	var m_range = 400
 	var m_rotation = 0
 	var m_evolution = "tank"
 }
@@ -79,12 +77,11 @@ class Tween(p : Vect)extends Turret
 	var m_cannonList = Array(new Cannon(new Vect(40,15), new Vect(50,0), "ammo"),
 							 new Cannon(new Vect(40,-15), new Vect(50,0), "ammo"))
 
-	var m_reloadSpeed = 10
-	var m_currentReload = 0
+	var m_radius = 60
 	var m_bulletPenetration = 0
 	var m_bulletDamage = 0
 	var m_bulletSpeed = 0
-	var m_range = 200
+	var m_range = 400
 	var m_rotation = 0
 	var m_evolution = "tank"
 }

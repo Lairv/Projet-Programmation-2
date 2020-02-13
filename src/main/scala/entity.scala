@@ -8,8 +8,18 @@ trait Entity
 	var m_type:String
 	var m_rotation:Double
 	
+	// m_radius correspond à la hitbox de l'entité
+	// Pour l'instant il n'y que des hitboxes circulaires, cela permet de facilement
+	// tester les collisions avec un simple calcul de distances
+	var m_radius:Int
+	
 	def update(g:Game):Unit
 	def init(g:Game):Unit
+	
+	def rmvHp(x:Int):Unit =
+	{
+		m_hp -= x
+	}
 	
 	def isDead():Boolean =
 	{

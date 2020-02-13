@@ -30,9 +30,9 @@ class Game extends Reactor
 						}
 					}
 					// On enlève les entitées mortes
-					for (i <- m_deadEntities)
+					for (i <- m_deadEntities.length-1 to 0 by -1)
 					{
-						m_entityList.remove(i)
+						m_entityList.remove(m_deadEntities(i))
 					}
 					// On change les entitées a afficher
 					m_grid.setEntities(m_entityList)
@@ -40,7 +40,7 @@ class Game extends Reactor
 					m_grid.repaint
 					m_grid.revalidate
 				}
-				Thread.sleep(50)
+				Thread.sleep(17)
 			}
 		}
 	}
@@ -55,6 +55,11 @@ class Game extends Reactor
 			}
 		}
 		return None
+	}
+	
+	def addEntity(e : Entity) : Unit =
+	{
+		m_entityList += e
 	}
 	
 	def newGame : BorderPanel =
@@ -126,6 +131,7 @@ class Game extends Reactor
 							var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
 							i.init(this)
 							m_entityList += i
+							m_grid.putTurret(p)
 						}
 						else
 						{
@@ -144,6 +150,7 @@ class Game extends Reactor
 							var i = new Tween(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
 							i.init(this)
 							m_entityList += i
+							m_grid.putTurret(p)
 						}
 						else
 						{

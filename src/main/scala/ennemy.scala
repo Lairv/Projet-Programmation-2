@@ -23,7 +23,7 @@ trait Ennemy extends Entity
 	
 	def update(g:Game):Unit =
 	{
-		m_rotation += math.Pi / 30
+		m_rotation += math.Pi / 360
 		if ((m_target-m_pos).length < m_speed/2.0)
 		{
 			g.m_grid.nextPivotPoint(m_currPivP) match
@@ -52,14 +52,15 @@ trait Ennemy extends Entity
 
 class YSquare extends Ennemy
 {
-	var m_sprite = ImageIO.read(getClass().getResource("sch.png"))
+	var m_sprite = ImageIO.read(getClass().getResource("ysquare.png"))
 	var m_maxHp = 100
 	var m_hp = 100
 	var m_pos = new Vect(0,0)
 	var m_offset = new Vect(25,25)
+	var m_radius = 25
 	var m_target = new Vect(200,200)
 	var m_reward = 1
-	var m_speed = 8.0
+	var m_speed = 2.0
 	var m_currPivP = 0
 	var m_rotation = 0
 

@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/grid.scala:140:15: value m_cannonList is not a member of Entity[0m
-[0m[[0m[31merror[0m] [0m[0m		for (i <- t.m_cannonList)[0m
-[0m[[0m[31merror[0m] [0m[0m		            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/grid.scala:180:6: not found: value drawOval[0m
+[0m[[0m[31merror[0m] [0m[0m					drawOval(t.m_pos.x - t.m_range,[0m
+[0m[[0m[31merror[0m] [0m[0m					^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

@@ -64,6 +64,11 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 		!(m_map.at(p.y,p.x)) && !(m_entityMap.at(p.y,p.x))
 	}
 	
+	def putTurret(p : Vect) : Unit =
+	{
+		m_entityMap.ch(p.y,p.x,true)
+	}
+	
 	def initGrid () =
 	{
 		for (i <- 0 to m_rows-1)
@@ -149,6 +154,37 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 		}
 	}
 	
+	def drawLifeBar(g : Graphics2D, e : Entity) : Unit =
+	{
+		g.setColor(Color.black)
+		g.fillRect(e.m_pos.x - e.m_maxHp/2,
+				   e.m_pos.y - e.m_offset.y - 10,
+				   e.m_maxHp, 10)
+		g.setColor(Color.red)
+		g.fillRect(e.m_pos.x-e.m_maxHp/2 + 2,
+				   e.m_pos.y - e.m_offset.y + 2 - 10,
+				   math.min(math.max(e.m_hp,0),e.m_maxHp - 4),
+				   6)
+	}
+	
+	def drawTurretRange(g : Graphics2D, t : Turret) : Unit =
+	{
+		m_selected match
+		{
+			case None =>
+				{}
+			case Some(p) =>
+				if (getPosInGrid(t.m_pos) == p)
+				{
+					g.setColor(Color.green)
+					g.drawOval(t.m_pos.x - t.m_range,
+							 t.m_pos.y - t.m_range,
+							 2*t.m_range,
+							 2*t.m_range)
+				}
+		}
+	}
+	
 	def drawEntities(g : Graphics2D) : Unit =
 	{
 		for (i <- m_entities)
@@ -168,9 +204,16 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 				g.drawImage(i.m_sprite,at,null)
 			}
 			
-			// Partie pour dessiner les cannons
+			// Partie pour dessiner les barres de vie
+			if (i.m_type == "ennemy")
+			{
+				drawLifeBar(g,i)
+			}
+			
+			// Partie pour dessiner les cannons + le cercle de portée
 			if (i.m_type == "turret")
 			{
+				drawTurretRange(g,i.asInstanceOf[Turret])
 				drawTurretCannons(g,i.asInstanceOf[Turret])
 			}
 		}
