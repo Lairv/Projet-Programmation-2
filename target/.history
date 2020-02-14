@@ -21,3 +21,4 @@ compile
 run
 git status
 run
+exit

@@ -4,7 +4,7 @@ import swing.event._
 object MyApp extends SimpleSwingApplication {
 	def top = new MainFrame {
 
-		title = "Diep.io"
+		title = "Diep TD"
 		contents = (new Game).newGame
 		
 	}

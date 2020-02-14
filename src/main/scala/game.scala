@@ -80,20 +80,20 @@ class Game extends Reactor
 			preferredSize = new Dimension(200,50)
 			text = "Add tank"
 		}
-		val addTweenButton = new Button
+		val addTwinButton = new Button
 		{
 			preferredSize = new Dimension(200,50)
-			text = "Add double tank"
+			text = "Add twin"
 		}
     	val buttonPanel = new GridPanel(5,1)
     	{
     		contents += playButton
     		contents += addTankButton
-    		contents += addTweenButton
+    		contents += addTwinButton
     	}
     	listenTo(playButton)
     	listenTo(addTankButton)
-    	listenTo(addTweenButton)
+    	listenTo(addTwinButton)
     	
 		// Création de la grille de jeu
     	m_grid.initGrid()
@@ -135,11 +135,11 @@ class Game extends Reactor
 						}
 						else
 						{
-							textOutput.text = "Y'a déjà une tourelle fdp"
+							textOutput.text = "Mets pas de tourelle ici fdp"
 						}
 				}		
 			
-			case ButtonClicked(source) if (source == addTweenButton) =>
+			case ButtonClicked(source) if (source == addTwinButton) =>
 				m_grid.m_selected match
 				{
 					case None =>
@@ -147,14 +147,14 @@ class Game extends Reactor
 					case Some(p) =>
 						if (m_grid.isAvailable(p))
 						{
-							var i = new Tween(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+							var i = new Twin(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
 							i.init(this)
 							m_entityList += i
 							m_grid.putTurret(p)
 						}
 						else
 						{
-							textOutput.text = "Y'a déjà une tourelle fdp"
+							textOutput.text = "Mets pas de tourelle ici fdp"
 						}
 				}		
 				

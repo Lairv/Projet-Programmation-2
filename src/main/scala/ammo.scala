@@ -3,11 +3,32 @@ import scala.math
 
 trait Ammo extends Entity
 {
+	var m_source:Turret
 	var m_target:Entity
 	var m_speed:Int
+	var m_direction:Double
 	var m_dmg:Int
 	
 	def init(g:Game):Unit = {}
+}
+
+class Bullet(p : Vect, sprite : String, offset : Vect, radius : Int, target : Entity, source : Turret, damage : Int, penetration : Int) extends Ammo
+{
+	var m_sprite = ImageIO.read(getClass().getResource(sprite))
+	var m_maxHp = penetration
+	var m_hp = penetration
+	var m_pos = p
+	var m_offset = offset
+	var m_type = "bullet"
+	var m_rotation = 0.0
+	var m_radius = radius
+	
+	var m_source = source
+	var m_target = target
+	var m_speed = source.m_bulletSpeed
+	var m_direction = 0
+	var m_dmg = damage
+	
 	def update(g:Game)
 	{
 		var inter = m_target.m_pos-m_pos
@@ -21,19 +42,4 @@ trait Ammo extends Entity
 			m_hp = 0
 		}
 	}
-}
-
-class BasicAmmo(p : Vect, target : Entity) extends Ammo
-{
-	var m_sprite = ImageIO.read(getClass().getResource("basicammo.png"))
-	var m_maxHp = 100
-	var m_hp = 100
-	var m_pos = p
-	var m_offset = new Vect(25,25)
-	var m_type = "ammo"
-	var m_rotation = 0.0
-	var m_radius = 14
-	var m_target = target
-	var m_speed = 25
-	var m_dmg = 30
 }

@@ -14,6 +14,6 @@ Dans l'ordre d'importance :
 									11111111110000111000
 									00000000000000111000
 									00000000000000111000
-									
-									
+
+
 - Ajouter un système de collision pour les tirs
