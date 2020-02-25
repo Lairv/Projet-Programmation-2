@@ -1,6 +1,6 @@
 import swing._
 import swing.event._
-import java.awt.{Graphics2D,Color}
+import java.awt.{Graphics2D,Color,Font}
 import java.awt.geom.AffineTransform
 import javax.imageio.ImageIO
 import scala.collection.mutable.ArrayBuffer
@@ -11,25 +11,27 @@ class booleanMatrix(cols:Int, rows:Int)
 	val m_rows = rows
 	val m_arr = new Array[Boolean](m_cols*m_rows)
 	
-	def at(r:Int, c:Int):Boolean =
+	def at(x:Int, y:Int):Boolean =
 	{
-		return m_arr(m_cols * r + c)
+		return m_arr(m_cols * y + x)
 	}
 	
-	def ch(r:Int, c:Int, v:Boolean):Unit =
+	def ch(x:Int, y:Int, v:Boolean):Unit =
 	{
-		m_arr(m_cols*r+c) = v	
+		m_arr(m_cols*y+x) = v	
 	}
 }
 
-class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
+class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 {
 	val m_cols = cols
 	val m_rows = rows
 	val m_cellSize = cellSize
 	var m_map = new booleanMatrix(m_cols,m_rows)
 	var m_entityMap = new booleanMatrix(m_cols,m_rows)
-	var m_entities = ArrayBuffer[Entity]()
+	
+	var m_game = game
+	
 	var m_selected : Option[Vect] = None
 	
 	var m_random = scala.util.Random
@@ -61,38 +63,38 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 	
 	def isAvailable(p : Vect) : Boolean =
 	{
-		!(m_map.at(p.y,p.x)) && !(m_entityMap.at(p.y,p.x))
+		!(m_map.at(p.x,p.y)) && !(m_entityMap.at(p.x,p.y))
 	}
 	
 	def putTurret(p : Vect) : Unit =
 	{
-		m_entityMap.ch(p.y,p.x,true)
+		m_entityMap.ch(p.x,p.y,true)
 	}
 	
 	def initGrid () =
 	{
-		for (i <- 0 to m_rows-1)
+		for (x <- 0 to m_cols-1)
 		{
-			for (j <- 0 to m_cols-1)
+			for (y <- 0 to m_rows-1)
 			{
-				m_map.ch(i,j,false)
-				m_entityMap.ch(i,j,false)
+				m_map.ch(x,y,false)
+				m_entityMap.ch(x,y,false)
 			}
 		}
 		
 		// A changer en fonction de la map qu'on veut faire
-		for (i <- 3 to 5)
+		for (y <- 3 to 5)
 		{
-			for (j <- 0 to 15)
+			for (x <- 0 to 15)
 			{
-				m_map.ch(i,j,true)
+				m_map.ch(x,y,true)
 			}
 		}
-		for (i <- 6 to 9)
+		for (y <- 6 to 9)
 		{
-			for (j <- 13 to 15)
+			for (x <- 13 to 15)
 			{
-				m_map.ch(i,j,true)
+				m_map.ch(x,y,true)
 			}
 		}
 	}
@@ -101,13 +103,13 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 	{
 		// Dessine les cases
 		g.setColor(Color.gray)
-		for (i <- 0 to m_rows-1)
+		for (x <- 0 to m_cols-1)
 		{
-			for (j <- 0 to m_cols-1)
+			for (y <- 0 to m_rows-1)
 			{
-				if (!m_map.at(i,j))
+				if (!m_map.at(x,y))
 				{
-					g.fillRect(j*m_cellSize, i*m_cellSize, m_cellSize, m_cellSize)
+					g.fillRect(x*m_cellSize, y*m_cellSize, m_cellSize, m_cellSize)
 				}
 			}
 		}
@@ -132,11 +134,6 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 			g.drawLine(0, i*m_cellSize, cols * m_cellSize, i*m_cellSize)
 		}
 		
-	}
-	
-	def setEntities(entityList : ArrayBuffer[Entity]) : Unit =
-	{
-		m_entities = entityList
 	}
 	
 	def drawTurretCannons(g : Graphics2D, t : Turret) : Unit =
@@ -187,7 +184,7 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 	
 	def drawEntities(g : Graphics2D) : Unit =
 	{
-		for (i <- m_entities)
+		for (i <- m_game.m_entityList)
 		{
 			if (i.m_rotation == 0) // Si l'entité n'est pas tournée on ne calcule pas de rotation, petit gain de performances
 			{
@@ -214,9 +211,18 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 			if (i.m_type == "turret")
 			{
 				drawTurretRange(g,i.asInstanceOf[Turret])
-				drawTurretCannons(g,i.asInstanceOf[Turret])
+				// drawTurretCannons(g,i.asInstanceOf[Turret])
 			}
 		}
+	}
+	
+	def drawPlayer(g : Graphics2D) : Unit =
+	{
+		g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20))
+		g.setColor(Color.red)
+		g.drawString("PV : " + m_game.m_player.m_hp, 5 , 25)
+		g.setColor(Color.yellow)
+		g.drawString("Golds : " + m_game.m_player.m_gold, 5 , 50)
 	}
 	
 	override def paint(g : Graphics2D)
@@ -225,6 +231,8 @@ class Grid(cols:Int, rows:Int, cellSize:Int)extends Component
 		drawGrid(g)
 		// On dessine les entitées
 		drawEntities(g)
+		// On affiche les pv + golds du joueur
+		drawPlayer(g)
 	}
 	
 }

@@ -65,3 +65,19 @@ class YSquare extends Ennemy
 	var m_rotation = 0
 
 }
+
+class RTriangle extends Ennemy
+{
+	var m_sprite = ImageIO.read(getClass().getResource("rtriangle.png"))
+	var m_maxHp = 50
+	var m_hp = 50
+	var m_pos = new Vect(0,0)
+	var m_offset = new Vect(35,35)
+	var m_radius = 15
+	var m_target = new Vect(200,200)
+	var m_reward = 1
+	var m_speed = 4.0
+	var m_currPivP = 0
+	var m_rotation = 0
+
+}
