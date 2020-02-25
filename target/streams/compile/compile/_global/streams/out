@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/main.scala:10:26: ';' expected but 'extends' found.[0m
-[0m[[0m[31merror[0m] [0m[0m	def top = new MainFrame extends java.awt.Container {[0m
-[0m[[0m[31merror[0m] [0m[0m	                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/main.scala:14:42: reassignment to val[0m
+[0m[[0m[31merror[0m] [0m[0m			case ButtonClicked(source) if (source = MainMenu.startButton) =>[0m
+[0m[[0m[31merror[0m] [0m[0m			                                      ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m
