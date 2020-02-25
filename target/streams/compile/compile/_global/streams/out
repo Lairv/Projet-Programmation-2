@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/main.scala:14:42: reassignment to val[0m
-[0m[[0m[31merror[0m] [0m[0m			case ButtonClicked(source) if (source = MainMenu.startButton) =>[0m
-[0m[[0m[31merror[0m] [0m[0m			                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/game.scala:393:29: value state is not a member of scala.swing.GridPanel{def m_state: Boolean; def m_state_=(x$1: Boolean): Unit}[0m
+[0m[[0m[31merror[0m] [0m[0m							if (!modifiablePanel.state)[0m
+[0m[[0m[31merror[0m] [0m[0m							                     ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

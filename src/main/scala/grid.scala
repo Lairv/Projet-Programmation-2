@@ -66,6 +66,11 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 		!(m_map.at(p.x,p.y)) && !(m_entityMap.at(p.x,p.y))
 	}
 	
+	def isTurret(p : Vect) : Boolean =
+	{
+		!(m_map.at(p.x,p.y)) && (m_entityMap.at(p.x,p.y))
+	}
+	
 	def putTurret(p : Vect) : Unit =
 	{
 		m_entityMap.ch(p.x,p.y,true)

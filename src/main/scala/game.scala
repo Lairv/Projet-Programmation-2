@@ -119,33 +119,265 @@ class Game extends Reactor
 		}
 	}
 	
+	def getTurretInPos(p : Vect) : Option[Turret] =
+	{
+		if (m_grid.isTurret(p))
+		{
+			for (e <- m_entityList)
+			{
+				if (m_grid.getPosInGrid(e.m_pos) == p)
+				{
+					return Some (e.asInstanceOf[Turret])
+				}
+			}
+		}
+		return None
+	}
+		
+	// DEFINITION DE TOUS LES ELEMENTS DE L'INTERFACE
+	
+	// Panneau des boutons
+	val textOutput = new TextField
+	{
+		text = "Welcome !"
+		editable = false
+	}
+	val sendWaveButton = new Button 
+	{
+		preferredSize = new Dimension(250, 40)
+		text = "New wave"
+	}
+	
+	// Affiché quand on ne sélectionne pas de tourelles
+	
+	val addTurretButton = new Button
+	{
+		text = "Add turret 50g"
+	}
+	
+	val nonSelectedPanel = new BorderPanel
+	{
+		layout(addTurretButton) = BorderPanel.Position.Center
+	}
+	
+	// Affiché quand on sélectionne une tourelle
+	
+	// Barres de progression
+	val expBar = new ProgressBar
+	{
+		min = 0
+		max = 100
+		label = "EXP"
+		labelPainted = true
+	}
+	val bulletSpeedBar = new ProgressBar
+	{
+		min = 0
+		max = 100
+		label = "Bullet Speed"
+		labelPainted = true
+	}
+	val bulletPenBar = new ProgressBar
+	{
+		min = 0
+		max = 100
+		label = "Bullet Penetration"
+		labelPainted = true
+	}
+	val bulletDmgBar = new ProgressBar
+	{
+		min = 0
+		max = 100
+		label = "Bullet Damage"
+		labelPainted = true
+	}
+	val reloadBar = new ProgressBar
+	{
+		min = 0
+		max = 100
+		label = "Reload Speed"
+		labelPainted = true
+	}
+	
+	// Boutons correspondants
+	val bulletSpeedButton = new Button
+	{
+		text = "+"
+	}
+	val bulletPenButton = new Button
+	{
+		text = "+"
+	}
+	val bulletDmgButton = new Button
+	{
+		text = "+"
+	}
+	val reloadButton = new Button
+	{
+		text = "+"
+	}
+	
+	val progressionBarPanel = new GridPanel(9,1)
+	{
+		contents += expBar
+		contents += bulletSpeedBar
+		contents += bulletSpeedButton
+		contents += bulletPenBar
+		contents += bulletPenButton
+		contents += bulletDmgBar
+		contents += bulletDmgButton
+		contents += reloadBar
+		contents += reloadButton
+	}
+	
+	// Panel avec les évolutions
+	val evolution1Button = new Button
+	{
+		text = "Evolution 1"
+	}
+	val evolution2Button = new Button
+	{
+		text = "Evolution 2"
+	}
+	val evolution3Button = new Button
+	{
+		text = "Evolution 3"
+	}
+	val evolution4Button = new Button
+	{
+		text = "Evolution 4"
+	}
+	
+	val evolutionPanel = new GridPanel(2,2)
+	{
+		contents += evolution1Button
+		contents += evolution2Button
+		contents += evolution3Button
+		contents += evolution4Button
+	}
+	
+	// Bouton pour vendre
+	val sellButton = new Button
+	{
+		text = "$$$"
+	}
+	
+	// Panel quand une tourelle est sélectionnée
+	val selectedPanel = new BorderPanel
+	{
+		layout(progressionBarPanel) = BorderPanel.Position.North
+		layout(evolutionPanel) = BorderPanel.Position.Center
+		layout(sellButton) = BorderPanel.Position.South
+	}
+	
+	// Panneau général qui est modifié quand on sélectionne une tourelle
+	val modifiablePanel = new GridPanel(1,1)
+	{
+		var m_state = false // Permet de savoir dans quel état est ce panel
+		contents += nonSelectedPanel
+	}
+	
+	// Fonctions pour actualiser et modifier les panels
+	
+	object PanelLoop extends Runnable
+	{
+		def run
+		{
+			while (true)
+			{
+				this.synchronized
+				{
+					modifiablePanel.repaint
+					modifiablePanel.revalidate
+				}
+				Thread.sleep(100)
+			}
+		}
+	}
+	
+	def swapModifiablePanel() : Unit =
+	{
+		if (!modifiablePanel.m_state)
+		{
+			modifiablePanel.contents -= nonSelectedPanel
+			modifiablePanel.contents += selectedPanel
+			modifiablePanel.m_state = true
+		}
+		else
+		{
+			modifiablePanel.contents -= selectedPanel
+			modifiablePanel.contents += nonSelectedPanel
+			modifiablePanel.m_state = false
+		}
+	}
+	
+	def updateSelectedPanel(t : Turret) : Unit =
+	{
+		expBar.value = t.m_exp
+		bulletSpeedBar.value = t.m_bulletSpeed
+		bulletPenBar.value = t.m_bulletPenetration
+		bulletDmgBar.value = t.m_bulletDamage
+		reloadBar.value = t.m_reload
+	}
+	
+	// Panel avec les boutons
+	val buttonPanel = new BorderPanel
+	{	
+		layout(sendWaveButton) = BorderPanel.Position.North
+		layout(modifiablePanel) = BorderPanel.Position.Center
+	}
+	listenTo(sendWaveButton)
+	listenTo(addTurretButton)
+	
+	// Création de l'interface
+	val panel = new BorderPanel
+	{
+		layout(buttonPanel) = BorderPanel.Position.West
+		layout(m_grid) = BorderPanel.Position.East
+		layout(textOutput) = BorderPanel.Position.South
+	}
+	
+	
+	// Ajout des évènements
+	reactions +=
+	{
+		case ButtonClicked(source) if (source == sendWaveButton) =>
+			swapModifiablePanel()
+			if (m_waveCounter == m_waves.length)
+			{
+				textOutput.text = "C'est terminé fdp"
+			}
+			else
+			{
+				m_waves(m_waveCounter).sendWave
+				m_waveCounter += 1
+			}
+			
+		case ButtonClicked(source) if (source == addTurretButton) =>
+			m_grid.m_selected match
+			{
+				case None =>
+					textOutput.text = "Selectionne une case fdp"
+				case Some(p) =>
+					if (m_grid.isAvailable(p))
+					{
+						var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+						i.init(this)
+						m_entityList += i
+						m_grid.putTurret(p)
+					}
+					else
+					{
+						textOutput.text = "Mets pas de tourelle ici fdp"
+					}
+			}		
+		
+		case _ => {}
+	}
+		
+	
 	def newGame : BorderPanel =
 	{	
-		// Panneau des boutons
-		val textOutput = new TextField
-		{
-			text = "Welcome !"
-			editable = false
-		}
-		val sendWaveButton = new Button 
-		{
-			text = "New wave"
-		}
-		val addTurretButton = new Button
-		{
-			text = "Add turret 50g"
-		}
-		
-		
-    	val buttonPanel = new GridPanel(10,1)
-    	{
-    		preferredSize = new Dimension(200, 150)
-    		contents += sendWaveButton
-    		contents += addTurretButton
-    	}
-    	listenTo(sendWaveButton)
-    	listenTo(addTurretButton)
-    	
 		// Création de la grille de jeu
     	m_grid.initGrid()
     	m_grid.listenTo(m_grid.mouse.clicks)
@@ -153,54 +385,27 @@ class Game extends Reactor
 		{
 				case MouseClicked(_,p,_,_,_) =>
 					m_grid.m_selected = Some (m_grid.getPosInGrid(new Vect(p.x,p.y)))
+					getTurretInPos(m_grid.getPosInGrid(new Vect(p.x,p.y))) match
+					{
+						case None =>
+							if (modifiablePanel.m_state)
+							{
+								swapModifiablePanel()
+							}
+						case Some(t) =>
+							if (!modifiablePanel.m_state)
+							{
+								updateSelectedPanel(t)
+								swapModifiablePanel()
+							}
+					}
+					
 		}
     	
-    	// Création de l'interface
-    	val panel = new BorderPanel
-    	{
-			layout(buttonPanel) = BorderPanel.Position.West
-    		layout(m_grid) = BorderPanel.Position.East
-    		layout(textOutput) = BorderPanel.Position.South
-		}
-		
-		// Ajout des évènements
-		reactions +=
-		{
-			case ButtonClicked(source) if (source == sendWaveButton) => 
-				if (m_waveCounter == m_waves.length)
-				{
-					textOutput.text = "C'est terminé fdp"
-				}
-				else
-				{
-					m_waves(m_waveCounter).sendWave
-					m_waveCounter += 1
-				}
-				
-			case ButtonClicked(source) if (source == addTurretButton) =>
-				m_grid.m_selected match
-				{
-					case None =>
-						textOutput.text = "Selectionne une case fdp"
-					case Some(p) =>
-						if (m_grid.isAvailable(p))
-						{
-							var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
-							i.init(this)
-							m_entityList += i
-							m_grid.putTurret(p)
-						}
-						else
-						{
-							textOutput.text = "Mets pas de tourelle ici fdp"
-						}
-				}		
-			
-			case _ => {}
-		}
-		
 		// Démarrage de la boucle de jeu dans un thread
     	new Thread(Loop).start
+		// Actualisation des Panels dans un thread
+    	new Thread(PanelLoop).start
     	
 		return panel
 	}
