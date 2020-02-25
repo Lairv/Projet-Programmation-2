@@ -30,7 +30,7 @@ trait Turret extends Entity
 	{
 		for (i <- m_cannonList)
 		{
-		i.refresh()
+			i.refresh()
 		}
 	}
 	
@@ -71,8 +71,8 @@ class Tank(p : Vect) extends Turret
 	var m_radius = 60
 	var m_bulletPenetration = 10
 	var m_bulletDamage = 20
-	var m_bulletSpeed = 25
-	var m_reload = 20
+	var m_bulletSpeed = 20
+	var m_reload = 40
 	var m_range = 400
 	var m_rotation = 0
 	var m_upgrade = "tank"
@@ -94,8 +94,8 @@ class Twin(p : Vect)extends Turret
 	var m_radius = 60
 	var m_bulletPenetration = 10
 	var m_bulletDamage = 20
-	var m_bulletSpeed = 25
-	var m_reload = 20
+	var m_bulletSpeed = 20
+	var m_reload = 40
 	var m_range = 400
 	var m_rotation = 0
 	var m_upgrade = "twin"

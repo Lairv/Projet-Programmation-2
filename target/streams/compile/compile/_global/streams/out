@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/users/dptinfo/ricros/Cours/L3/Projet-Programmation-2/Diep_TD/Projet-Programmation-2/src/main/scala/ammo.scala:44:14: value gain_exp is not a member of Turret[0m
-[0m[[0m[31merror[0m] [0m[0m				m_source.gain_exp(m_target.asInstanceOf[Ennemy].m_expReward)[0m
-[0m[[0m[31merror[0m] [0m[0m				         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/game.scala:183:3: illegal start of declaration (possible cause: missing `=' in front of current method body)[0m
+[0m[[0m[31merror[0m] [0m[0m		m_grid.m_selected match[0m
+[0m[[0m[31merror[0m] [0m[0m		^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

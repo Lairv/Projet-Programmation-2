@@ -76,6 +76,11 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 		m_entityMap.ch(p.x,p.y,true)
 	}
 	
+	def removeTurret(p : Vect) : Unit =
+	{
+		m_entityMap.ch(p.x,p.y,false)
+	}
+	
 	def initGrid () =
 	{
 		for (x <- 0 to m_cols-1)

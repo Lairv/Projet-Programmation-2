@@ -107,6 +107,24 @@ class Game extends Reactor
 		m_entityList += e
 	}
 	
+	def addTurret(turretType : String, p : Vect) : Unit =
+	{
+		if (turretType == "tank")
+		{
+			var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "twin")
+		{
+			var i = new Twin(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+	}
+	
 	def addEnnemy(ennemyType : String, number : Int) : Unit =
 	{
 		if (ennemyType == "ysquare")
@@ -142,6 +160,31 @@ class Game extends Reactor
 			}
 		}
 		return None
+	}
+	
+	// À n'appeler que lorsqu'on sait qu'une tourelle est sélectionnée
+	def getSelectedTurret() : Turret =
+	{
+		m_grid.m_selected match
+		{
+			case None => new Tank(new Vect(0,0)) // n'arrive jamais
+			case Some(p) =>
+				getTurretInPos(p) match
+				{
+					case None => new Tank(new Vect(0,0)) // n'arrive jamais
+					case Some(t) => return t
+				}
+		}
+	}
+	
+	// À n'appeler que lorsqu'on sait qu'une case est sélectionnée
+	def getSelectedPos() : Vect =
+	{
+		m_grid.m_selected match
+		{
+			case None => new Vect(0,0)
+			case Some(p) => p
+		}
 	}
 		
 	// DEFINITION DE TOUS LES ELEMENTS DE L'INTERFACE
@@ -203,8 +246,8 @@ class Game extends Reactor
 	}
 	val reloadBar = new ProgressBar
 	{
-		min = 0
-		max = 100
+		min = 10
+		max = 40
 		label = "Reload Speed"
 		labelPainted = true
 	}
@@ -212,19 +255,19 @@ class Game extends Reactor
 	// Boutons correspondants
 	val bulletSpeedButton = new Button
 	{
-		text = "+"
+		text = "+ (10g)"
 	}
 	val bulletPenButton = new Button
 	{
-		text = "+"
+		text = "+ (10g)"
 	}
 	val bulletDmgButton = new Button
 	{
-		text = "+"
+		text = "+ (10g)"
 	}
 	val reloadButton = new Button
 	{
-		text = "+"
+		text = "+ (10g)"
 	}
 	
 	val progressionBarPanel = new GridPanel(9,1)
@@ -280,14 +323,184 @@ class Game extends Reactor
 		layout(sellButton) = BorderPanel.Position.South
 	}
 	
+	listenTo(bulletSpeedButton)
+	listenTo(bulletPenButton)
+	listenTo(bulletDmgButton)
+	listenTo(reloadButton)
+	listenTo(evolution1Button)
+	listenTo(evolution2Button)
+	listenTo(evolution3Button)
+	listenTo(evolution4Button)
+	listenTo(sellButton)
+	
+	reactions +=
+	{
+		case ButtonClicked(source) if (source == bulletSpeedButton) =>
+			var t = getSelectedTurret()
+			t.m_bulletSpeed += 10
+			m_player.m_gold -= 10
+			t.init(m_g)
+		case ButtonClicked(source) if (source == bulletPenButton) =>
+			var t = getSelectedTurret()
+			t.m_bulletPenetration += 10
+			m_player.m_gold -= 10
+			t.init(m_g)
+		case ButtonClicked(source) if (source == bulletDmgButton) =>
+			var t = getSelectedTurret()
+			t.m_bulletDamage += 10
+			m_player.m_gold -= 10
+			t.init(m_g)
+		case ButtonClicked(source) if (source == reloadButton) =>
+			var t = getSelectedTurret()
+			t.m_reload -= 5
+			m_player.m_gold -= 10
+			t.init(m_g)
+		case ButtonClicked(source) if (source == evolution1Button) =>
+			getSelectedTurret.m_hp = 0
+			addTurret(evolution1Button.text,getSelectedPos)
+			m_player.m_gold -= 100
+		case ButtonClicked(source) if (source == evolution2Button) =>
+			getSelectedTurret.m_hp = 0
+			addTurret(evolution2Button.text,getSelectedPos)
+			m_player.m_gold -= 100
+		case ButtonClicked(source) if (source == evolution3Button) =>
+			getSelectedTurret.m_hp = 0
+			addTurret(evolution3Button.text,getSelectedPos)
+			m_player.m_gold -= 100
+		case ButtonClicked(source) if (source == evolution4Button) =>
+			getSelectedTurret.m_hp = 0
+			addTurret(evolution4Button.text,getSelectedPos)
+			m_player.m_gold -= 100
+		case ButtonClicked(source) if (source == sellButton) =>
+			getSelectedTurret.m_hp = 0
+			m_grid.removeTurret(getSelectedPos)
+			m_player.m_gold += 50
+		case _ => {}
+	}
+	
 	// Panneau général qui est modifié quand on sélectionne une tourelle
 	val modifiablePanel = new GridPanel(1,1)
 	{
-		var m_state = false // Permet de savoir dans quel état est ce panel
 		contents += nonSelectedPanel
 	}
 	
 	// Fonctions pour actualiser et modifier les panels
+	def updateSelectedPanel(t : Turret) : Unit =
+	{
+		expBar.value = t.m_exp
+		bulletSpeedBar.value = t.m_bulletSpeed
+		bulletPenBar.value = t.m_bulletPenetration
+		bulletDmgBar.value = t.m_bulletDamage
+		reloadBar.value = reloadBar.max - t.m_reload + reloadBar.min
+		
+		// Mise à jour des boutons
+		if (t.m_bulletSpeed + 10 <= bulletSpeedBar.max && m_player.m_gold >= 10)
+		{
+			bulletSpeedButton.enabled = true
+		}
+		else
+		{
+			bulletSpeedButton.enabled = false
+		}
+		if (t.m_bulletPenetration + 10 <= bulletPenBar.max && m_player.m_gold >= 10)
+		{
+			bulletPenButton.enabled = true
+		}
+		else
+		{
+			bulletPenButton.enabled = false
+		}
+		if (t.m_bulletDamage + 10 <= bulletDmgBar.max && m_player.m_gold >= 10)
+		{
+			bulletDmgButton.enabled = true
+		}
+		else
+		{
+			bulletDmgButton.enabled = false
+		}
+		if (t.m_reload - 5 >= reloadBar.min && m_player.m_gold >= 10)
+		{
+			reloadButton.enabled = true
+		}
+		else
+		{
+			reloadButton.enabled = false
+		}
+		
+		// Mise à jour des boutons d'evolution
+		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		{
+			evolution1Button.enabled = true
+		}
+		else
+		{
+			evolution1Button.enabled = false
+		}
+		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		{
+			evolution2Button.enabled = true
+		}
+		else
+		{
+			evolution2Button.enabled = false
+		}
+		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		{
+			evolution3Button.enabled = true
+		}
+		else
+		{
+			evolution3Button.enabled = false
+		}
+		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		{
+			evolution4Button.enabled = true
+		}
+		else
+		{
+			evolution4Button.enabled = false
+		}
+		
+		
+		Evolution.evolutions(t.m_upgrade) match
+		{
+			case None =>
+				evolution1Button.text = ""
+				evolution1Button.enabled = false
+				evolution2Button.text = ""
+				evolution2Button.enabled = false
+				evolution3Button.text = ""
+				evolution3Button.enabled = false
+				evolution4Button.text = ""
+				evolution4Button.enabled = false
+			case Some(e) =>
+				evolution1Button.text = e._1
+				evolution2Button.text = e._2
+				evolution3Button.text = e._3
+				evolution4Button.text = e._4
+		}
+	}
+	
+	def updateModifiablePanel() : Unit =
+	{
+		m_grid.m_selected match
+		{
+			case None =>
+				modifiablePanel.contents -= selectedPanel
+				modifiablePanel.contents += nonSelectedPanel
+			case Some(p) =>
+				getTurretInPos(p) match
+				{
+					case None =>
+						modifiablePanel.contents -= selectedPanel
+						modifiablePanel.contents += nonSelectedPanel
+					case Some(t) =>
+						updateSelectedPanel(t)
+						modifiablePanel.contents -= nonSelectedPanel
+						modifiablePanel.contents += selectedPanel
+				}
+		}
+	}
 	
 	object PanelLoop extends Runnable
 	{
@@ -297,37 +510,13 @@ class Game extends Reactor
 			{
 				this.synchronized
 				{
+					updateModifiablePanel()
 					modifiablePanel.repaint
 					modifiablePanel.revalidate
 				}
 				Thread.sleep(100)
 			}
 		}
-	}
-	
-	def swapModifiablePanel() : Unit =
-	{
-		if (!modifiablePanel.m_state)
-		{
-			modifiablePanel.contents -= nonSelectedPanel
-			modifiablePanel.contents += selectedPanel
-			modifiablePanel.m_state = true
-		}
-		else
-		{
-			modifiablePanel.contents -= selectedPanel
-			modifiablePanel.contents += nonSelectedPanel
-			modifiablePanel.m_state = false
-		}
-	}
-	
-	def updateSelectedPanel(t : Turret) : Unit =
-	{
-		expBar.value = t.m_exp
-		bulletSpeedBar.value = t.m_bulletSpeed
-		bulletPenBar.value = t.m_bulletPenetration
-		bulletDmgBar.value = t.m_bulletDamage
-		reloadBar.value = t.m_reload
 	}
 	
 	// Panel avec les boutons
@@ -352,10 +541,9 @@ class Game extends Reactor
 	reactions +=
 	{
 		case ButtonClicked(source) if (source == sendWaveButton) =>
-			swapModifiablePanel()
 			if (m_waveCounter == m_waves.length)
 			{
-				textOutput.text = "C'est terminé fdp"
+				textOutput.text = "C'est terminé"
 			}
 			else
 			{
@@ -367,18 +555,20 @@ class Game extends Reactor
 			m_grid.m_selected match
 			{
 				case None =>
-					textOutput.text = "Selectionne une case fdp"
+					textOutput.text = "Selectionne une case"
 				case Some(p) =>
-					if (m_grid.isAvailable(p))
+					if (m_player.m_gold < 50)
 					{
-						var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
-						i.init(this)
-						m_entityList += i
-						m_grid.putTurret(p)
+						textOutput.text = "Tu n'as pas assez d'argent"
+					}
+					else if (m_grid.isAvailable(p))
+					{
+						m_player.m_gold -= 50
+						addTurret("tank",p)
 					}
 					else
 					{
-						textOutput.text = "Mets pas de tourelle ici fdp"
+						textOutput.text = "Ne mets pas de tourelle ici"
 					}
 			}		
 		
@@ -395,26 +585,11 @@ class Game extends Reactor
 		{
 				case MouseClicked(_,p,_,_,_) =>
 					m_grid.m_selected = Some (m_grid.getPosInGrid(new Vect(p.x,p.y)))
-					getTurretInPos(m_grid.getPosInGrid(new Vect(p.x,p.y))) match
-					{
-						case None =>
-							if (modifiablePanel.m_state)
-							{
-								swapModifiablePanel()
-							}
-						case Some(t) =>
-							if (!modifiablePanel.m_state)
-							{
-								updateSelectedPanel(t)
-								swapModifiablePanel()
-							}
-					}
-					
 		}
     	
 		// Démarrage de la boucle de jeu dans un thread
     	new Thread(Loop).start
-		// Actualisation des Panels dans un thread
+		// Actualisation des panels dans un thread
     	new Thread(PanelLoop).start
     	
 		return panel
