@@ -39,6 +39,11 @@ class Bullet(p : Vect, sprite : String, offset : Vect, radius : Int, target : En
 		else
 		{
 			m_target.rmvHp(m_dmg)
+			if (m_target.m_hp <= 0 && m_target.m_hp > -m_dmg)
+			{
+				m_source.gainExp(m_target.asInstanceOf[Ennemy].m_expReward)
+				g.m_player.m_gold += m_target.asInstanceOf[Ennemy].m_goldReward
+			}
 			m_hp = 0
 		}
 	}

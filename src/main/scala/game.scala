@@ -16,20 +16,16 @@ class Game extends Reactor
 					new Wave(Array(
 								("ysquare",2,0),
 								("ysquare",2,2000),
-								("ysquare",2,4000),
-								("rtriangle",2,4000),
+								("ysquare",2,4000)
 								),this
 							),
 					new Wave(Array(
 								("ysquare",5,0),
-								("rtriangle",3,2500),
 								("ysquare",5,5000),
-								("rtriangle",3,7500),
 								("ysquare",5,10000),
-								("rtriangle",3,11000),
 								("ysquare",5,12000),
-								("rtriangle",3,11000),
-								("ysquare",5,14000)
+								("ysquare",5,14000),
+								("rtriangle",1,18000)
 								),this
 							),
 					new Wave(Array(
@@ -37,6 +33,20 @@ class Game extends Reactor
 								("ysquare",5,2000),
 								("ysquare",5,4000),
 								("ysquare",5,6000),
+								("ysquare",5,8000),
+								("ysquare",5,10000),
+								("ysquare",10,12000),
+								("ysquare",10,14000)
+								),this
+							),
+					new Wave(Array(
+								("ysquare",5,0),
+								("ysquare",5,2000),
+								("rtriangle",3,3000),
+								("ysquare",5,4000),
+								("rtriangle",3,5000),
+								("ysquare",5,6000),
+								("rtriangle",3,7000),
 								("ysquare",5,8000),
 								("ysquare",5,10000),
 								("ysquare",10,12000),

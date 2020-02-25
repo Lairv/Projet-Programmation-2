@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/game.scala:393:29: value state is not a member of scala.swing.GridPanel{def m_state: Boolean; def m_state_=(x$1: Boolean): Unit}[0m
-[0m[[0m[31merror[0m] [0m[0m							if (!modifiablePanel.state)[0m
-[0m[[0m[31merror[0m] [0m[0m							                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/users/dptinfo/ricros/Cours/L3/Projet-Programmation-2/Diep_TD/Projet-Programmation-2/src/main/scala/ammo.scala:44:14: value gain_exp is not a member of Turret[0m
+[0m[[0m[31merror[0m] [0m[0m				m_source.gain_exp(m_target.asInstanceOf[Ennemy].m_expReward)[0m
+[0m[[0m[31merror[0m] [0m[0m				         ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

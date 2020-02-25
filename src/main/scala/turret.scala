@@ -76,7 +76,7 @@ class Tank(p : Vect) extends Turret
 	var m_range = 400
 	var m_rotation = 0
 	var m_upgrade = "tank"
-	var m_exp = 60
+	var m_exp = 0
 }
 
 class Twin(p : Vect)extends Turret

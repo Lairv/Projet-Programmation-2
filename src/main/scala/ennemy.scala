@@ -3,10 +3,12 @@ import scala.math
 
 trait Ennemy extends Entity
 {
-	var m_reward:Int
 	var m_speed:Double
 	var m_target:Vect
 	var m_currPivP:Int
+	var m_expReward:Int
+	var m_goldReward:Int
+	var m_lifeCost:Int
 	var m_type = "ennemy"
 	
 	def init(g:Game):Unit =
@@ -29,6 +31,7 @@ trait Ennemy extends Entity
 			g.m_grid.nextPivotPoint(m_currPivP) match
 			{
 				case None =>
+					g.m_player.m_hp -= m_lifeCost
 					m_hp = 0
 				case Some(p) =>
 					m_target = p
@@ -59,10 +62,12 @@ class YSquare extends Ennemy
 	var m_offset = new Vect(25,25)
 	var m_radius = 25
 	var m_target = new Vect(200,200)
-	var m_reward = 1
 	var m_speed = 2.0
 	var m_currPivP = 0
 	var m_rotation = 0
+	var m_expReward=10
+	var m_goldReward=10
+	var m_lifeCost=1
 
 }
 
@@ -75,9 +80,11 @@ class RTriangle extends Ennemy
 	var m_offset = new Vect(35,35)
 	var m_radius = 15
 	var m_target = new Vect(200,200)
-	var m_reward = 1
 	var m_speed = 4.0
 	var m_currPivP = 0
 	var m_rotation = 0
+	var m_expReward=25
+	var m_goldReward=25
+	var m_lifeCost=1
 
 }

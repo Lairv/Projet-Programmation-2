@@ -1,1 +1,1 @@
-["sbt.Task[scala.collection.Seq[java.nio.file.Path]]",["/home/loic/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.1/scala-swing_2.12-2.0.1.jar","/home/loic/.sbt/boot/scala-2.12.10/lib/scala-library.jar"]]
+["sbt.Task[scala.collection.Seq[java.nio.file.Path]]",["/users/dptinfo/ricros/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.1/scala-swing_2.12-2.0.1.jar","/users/dptinfo/ricros/.sbt/boot/scala-2.12.10/lib/scala-library.jar"]]
