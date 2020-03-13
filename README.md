@@ -4,7 +4,7 @@ I - Description
 	Le jeu se base sur l'univers de Diep.io [...]
 
 I.V - La carte
-	Deux discrétisation
+	Deux discrétisations
 
 II - Les ennemis
 

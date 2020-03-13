@@ -70,7 +70,7 @@ class Tank(p : Vect) extends Turret
 
 	var m_radius = 60
 	var m_bulletPenetration = 10
-	var m_bulletDamage = 20
+	var m_bulletDamage = 6
 	var m_bulletSpeed = 20
 	var m_reload = 40
 	var m_range = 400
@@ -93,7 +93,7 @@ class Twin(p : Vect)extends Turret
 
 	var m_radius = 60
 	var m_bulletPenetration = 10
-	var m_bulletDamage = 20
+	var m_bulletDamage = 6
 	var m_bulletSpeed = 20
 	var m_reload = 40
 	var m_range = 400

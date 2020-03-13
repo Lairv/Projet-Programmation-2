@@ -34,7 +34,14 @@ class Bullet(p : Vect, sprite : String, offset : Vect, radius : Int, target : En
 		var inter = m_target.m_pos-m_pos
 		if (inter.length > (m_target.m_radius + m_radius))
 		{
-			m_pos = m_pos + inter*(m_speed/inter.length)
+			if (m_speed <= inter.length)
+			{
+				m_pos = m_pos + inter*(m_speed/inter.length)
+			}
+			else
+			{
+				m_pos = m_target.m_pos
+			}
 		}
 		else
 		{

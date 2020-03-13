@@ -53,6 +53,26 @@ class Game extends Reactor
 								("ysquare",10,14000)
 								),this
 							),
+					new Wave(Array(
+								("ysquare",5,0),
+								("ysquare",5,2000),
+								("rtriangle",3,3000),
+								("ysquare",5,4000),
+								("rtriangle",3,5000),
+								("ysquare",5,6000),
+								("rtriangle",3,7000),
+								("bpentagon",1,8000),
+								("ysquare",5,10000),
+								("bpentagon",3,12000),
+								("ysquare",10,14000)
+								),this
+							),
+					new Wave(Array(
+								("apentagon",1,0),
+								("bpentagon",3,5000),
+								("bpentagon",5,10000),
+								),this
+							),
 				)
 	var m_waveCounter = 0			
 	
@@ -141,6 +161,24 @@ class Game extends Reactor
 			for (k <- 1 to number)
 			{
 				var i = new RTriangle
+				i.init(this)
+				addEntity(i)
+			}
+		}
+		if (ennemyType == "bpentagon")
+		{
+			for (k <- 1 to number)
+			{
+				var i = new BPentagon
+				i.init(this)
+				addEntity(i)
+			}
+		}
+		if (ennemyType == "apentagon")
+		{
+			for (k <- 1 to number)
+			{
+				var i = new APentagon
 				i.init(this)
 				addEntity(i)
 			}
@@ -347,7 +385,7 @@ class Game extends Reactor
 			t.init(m_g)
 		case ButtonClicked(source) if (source == bulletDmgButton) =>
 			var t = getSelectedTurret()
-			t.m_bulletDamage += 10
+			t.m_bulletDamage += 5
 			m_player.m_gold -= 10
 			t.init(m_g)
 		case ButtonClicked(source) if (source == reloadButton) =>

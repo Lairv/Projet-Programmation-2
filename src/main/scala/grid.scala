@@ -164,13 +164,13 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 	def drawLifeBar(g : Graphics2D, e : Entity) : Unit =
 	{
 		g.setColor(Color.black)
-		g.fillRect(e.m_pos.x - e.m_maxHp/2,
+		g.fillRect(e.m_pos.x - 50,
 				   e.m_pos.y - e.m_offset.y - 10,
-				   e.m_maxHp, 10)
+				   100, 10)
 		g.setColor(Color.red)
-		g.fillRect(e.m_pos.x-e.m_maxHp/2 + 2,
+		g.fillRect(e.m_pos.x-48,
 				   e.m_pos.y - e.m_offset.y + 2 - 10,
-				   math.min(math.max(e.m_hp,0),e.m_maxHp - 4),
+				   math.min(math.max(100*e.m_hp/e.m_maxHp,0),96),
 				   6)
 	}
 	
