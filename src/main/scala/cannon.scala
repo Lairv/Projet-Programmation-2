@@ -41,7 +41,7 @@ class Cannon (offset : Vect, direction : Vect, source : Turret, ammo : String, a
 		{
 			if (ammo=="bullet")
 			{
-				g.addEntity(new Bullet(source.m_pos+m_currentOffset, m_ammoSprite, m_ammoOffset, m_ammoRadius, target, m_source, m_damage, m_penetration))
+				g.addEntity(new Bullet(source.m_pos+m_currentOffset, m_ammoSprite, m_ammoOffset, m_ammoRadius, target, m_source, m_damage, m_penetration,m_currentDirection))
 			}
 		}
 		m_currentReload = (m_currentReload + 1) % m_reloadSpeed

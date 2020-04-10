@@ -1,9 +1,7 @@
-[0m[[0m[31merror[0m] [0m[0m/users/dptinfo/ricros/Cours/L3/Projet-Programmation-2/Diep_TD/Projet-Programmation-2/src/main/scala/ennemy.scala:92:7: class BPentagon needs to be abstract, since variable m_maxHp in trait Entity of type Int is not defined[0m
-[0m[[0m[31merror[0m] [0m[0m(Note that variables need to be initialized to be defined)[0m
-[0m[[0m[31merror[0m] [0m[0mclass BPentagon extends Ennemy[0m
-[0m[[0m[31merror[0m] [0m[0m      ^[0m
-[0m[[0m[31merror[0m] [0m[0m/users/dptinfo/ricros/Cours/L3/Projet-Programmation-2/Diep_TD/Projet-Programmation-2/src/main/scala/ennemy.scala:109:7: class APentagon needs to be abstract, since variable m_maxHp in trait Entity of type Int is not defined[0m
-[0m[[0m[31merror[0m] [0m[0m(Note that variables need to be initialized to be defined)[0m
-[0m[[0m[31merror[0m] [0m[0mclass APentagon extends Ennemy[0m
-[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/grid.scala:58:47: value initials is not a member of PivotPointGraph[0m
+[0m[[0m[31merror[0m] [0m[0m			var t = m_random.nextInt(m_pivotPointGraph.initials.length)[0m
+[0m[[0m[31merror[0m] [0m[0m			                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/grid.scala:59:56: value initials is not a member of PivotPointGraph[0m
+[0m[[0m[31merror[0m] [0m[0m			var u = m_pivotPointGraph.m_graph(m_pivotPointGraph.initials(t))[0m
+[0m[[0m[31merror[0m] [0m[0m			                                                    ^[0m
 [0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

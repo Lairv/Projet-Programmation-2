@@ -10,32 +10,35 @@ trait Ennemy extends Entity
 	var m_goldReward:Int
 	var m_lifeCost:Int
 	var m_type = "ennemy"
+	var m_dmg = 10
+	var m_rotationSpeed = math.Pi / 360
 	
 	def init(g:Game):Unit =
 	{
 		g.m_grid.nextPivotPoint(-1) match
 		{
-			case None =>
+			case (_,None) =>
 				println("Impossible")
-			case Some(p) => 
+			case (a,Some(p)) => 
 				m_pos = p
 				m_target = p
+				m_currPivP = a
 		}
 	} 
 	
 	def update(g:Game):Unit =
 	{
-		m_rotation += math.Pi / 360
+		m_rotation += m_rotationSpeed
 		if ((m_target-m_pos).length < m_speed/2.0)
 		{
 			g.m_grid.nextPivotPoint(m_currPivP) match
 			{
-				case None =>
+				case (_,None) =>
 					g.m_player.m_hp -= m_lifeCost
 					m_hp = 0
-				case Some(p) =>
+				case (a,Some(p)) =>
 					m_target = p
-					m_currPivP += 1
+					m_currPivP = a
 			}
 		}
 		else
@@ -56,11 +59,11 @@ trait Ennemy extends Entity
 class YSquare extends Ennemy
 {
 	var m_sprite = ImageIO.read(getClass().getResource("YellowSquare.png"))
-	var m_maxHp = 10
-	var m_hp = 10
+	var m_maxHp = 20
+	var m_hp = 20
 	var m_pos = new Vect(0,0)
-	var m_offset = new Vect(25,25)
-	var m_radius = 25
+	var m_offset = new Vect(35,35)
+	var m_radius = 30
 	var m_target = new Vect(200,200)
 	var m_speed = 2.0
 	var m_currPivP = 0
@@ -74,11 +77,11 @@ class YSquare extends Ennemy
 class RTriangle extends Ennemy
 {
 	var m_sprite = ImageIO.read(getClass().getResource("RedTriangle.png"))
-	var m_maxHp = 5
-	var m_hp = 5
+	var m_maxHp = 10
+	var m_hp = 10
 	var m_pos = new Vect(0,0)
-	var m_offset = new Vect(35,35)
-	var m_radius = 15
+	var m_offset = new Vect(37,45)
+	var m_radius = 25
 	var m_target = new Vect(200,200)
 	var m_speed = 3.0
 	var m_currPivP = 0
@@ -92,11 +95,11 @@ class RTriangle extends Ennemy
 class BPentagon extends Ennemy
 {
 	var m_sprite = ImageIO.read(getClass().getResource("BluePentagon.png"))
-	var m_maxHp = 100
-	var m_hp = 100
+	var m_maxHp = 150
+	var m_hp = 150
 	var m_pos = new Vect(0,0)
-	var m_offset = new Vect(60,60)
-	var m_radius = 60
+	var m_offset = new Vect(55,55)
+	var m_radius = 55
 	var m_target = new Vect(200,200)
 	var m_speed = 1.5
 	var m_currPivP = 0

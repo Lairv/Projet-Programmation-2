@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Game extends Reactor
 {
-	val m_grid = new Grid(20,10,50,this)
+	val m_grid = new Grid("map1",50,this)
 	var m_entityList = ArrayBuffer[Entity]()
 	var m_deadEntities = ArrayBuffer[Int]()
 	var m_g = this
@@ -73,6 +73,13 @@ class Game extends Reactor
 								("bpentagon",5,10000),
 								),this
 							),
+					new Wave(Array(
+								("apentagon",5,0),
+								("apentagon",10,5000),
+								("apentagon",50,10000),
+								("apentagon",500,15000),
+								),this
+							)
 				)
 	var m_waveCounter = 0			
 	
@@ -90,7 +97,7 @@ class Game extends Reactor
 					for (i <- 0 to m_entityList.length-1)
 					{
 						m_entityList(i).update(m_g)
-						if (m_entityList(i).isDead)
+						if (m_entityList(i).isDead || m_grid.isOutOfBound(m_entityList(i)))
 						{
 							m_deadEntities += i
 						}
@@ -139,6 +146,62 @@ class Game extends Reactor
 		if (turretType == "twin")
 		{
 			var i = new Twin(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "triplet")
+		{
+			var i = new Triplet(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "tripleshot")
+		{
+			var i = new Tripleshot(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "stalker")
+		{
+			var i = new Stalker(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "spreadshot")
+		{
+			var i = new Spreadshot(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "sniper")
+		{
+			var i = new Sniper(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "quadtank")
+		{
+			var i = new Quadtank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "pentashot")
+		{
+			var i = new Pentashot(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			i.init(this)
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
+		if (turretType == "octotank")
+		{
+			var i = new Octotank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
 			i.init(this)
 			m_entityList += i
 			m_grid.putTurret(p)
@@ -199,6 +262,25 @@ class Game extends Reactor
 		}
 		return None
 	}
+
+	def collide(e1 : Entity, e2 : Entity) : Boolean =
+	{
+		var inter = e1.m_pos-e2.m_pos
+		return (inter.length <= (e1.m_radius + e2.m_radius))
+	}
+
+	def getCollisions(e : Entity) : ArrayBuffer[Entity] =
+	{
+		var collideList = ArrayBuffer[Entity]()
+		for (i <- 0 to m_entityList.length-1)
+		{
+			if (collide(e,m_entityList(i)) && (m_entityList(i).m_type == "ennemy"))
+			{
+				 collideList += m_entityList(i)
+			}
+		}
+		return collideList
+	}
 	
 	// À n'appeler que lorsqu'on sait qu'une tourelle est sélectionnée
 	def getSelectedTurret() : Turret =
@@ -254,60 +336,18 @@ class Game extends Reactor
 	// Affiché quand on sélectionne une tourelle
 	
 	// Barres de progression
-	val expBar = new ProgressBar
-	{
-		min = 0
-		max = 100
-		label = "EXP"
-		labelPainted = true
-	}
-	val bulletSpeedBar = new ProgressBar
-	{
-		min = 0
-		max = 100
-		label = "Bullet Speed"
-		labelPainted = true
-	}
-	val bulletPenBar = new ProgressBar
-	{
-		min = 0
-		max = 100
-		label = "Bullet Penetration"
-		labelPainted = true
-	}
-	val bulletDmgBar = new ProgressBar
-	{
-		min = 0
-		max = 100
-		label = "Bullet Damage"
-		labelPainted = true
-	}
-	val reloadBar = new ProgressBar
-	{
-		min = 10
-		max = 40
-		label = "Reload Speed"
-		labelPainted = true
-	}
+	val expBar = new NewProgressBar(0,100,"EXP")
+	val bulletSpeedBar = new NewProgressBar(0,100,"Bullet Speed")
+	val bulletPenBar = new NewProgressBar(0,100,"Bullet Penetration")
+	val bulletDmgBar = new NewProgressBar(0,100,"Bullet Damage")
+	val reloadBar = new NewProgressBar(10,40,"Reload Speed")
 	
 	// Boutons correspondants
-	val bulletSpeedButton = new Button
-	{
-		text = "+ (10g)"
-	}
-	val bulletPenButton = new Button
-	{
-		text = "+ (10g)"
-	}
-	val bulletDmgButton = new Button
-	{
-		text = "+ (10g)"
-	}
-	val reloadButton = new Button
-	{
-		text = "+ (10g)"
-	}
-	
+	val bulletSpeedButton = new StatsButton(10,10,"speed")
+	val bulletPenButton = new StatsButton(10,10,"pen")
+	val bulletDmgButton = new StatsButton(10,5,"dmg")
+	val reloadButton = new StatsButton(10,5,"reload")
+
 	val progressionBarPanel = new GridPanel(9,1)
 	{
 		contents += expBar
@@ -322,23 +362,11 @@ class Game extends Reactor
 	}
 	
 	// Panel avec les évolutions
-	val evolution1Button = new Button
-	{
-		text = "Evolution 1"
-	}
-	val evolution2Button = new Button
-	{
-		text = "Evolution 2"
-	}
-	val evolution3Button = new Button
-	{
-		text = "Evolution 3"
-	}
-	val evolution4Button = new Button
-	{
-		text = "Evolution 4"
-	}
-	
+	val evolution1Button = new EvolutionButton("???",100,100)
+	val evolution2Button = new EvolutionButton("???",100,100)
+	val evolution3Button = new EvolutionButton("???",100,100)
+	val evolution4Button = new EvolutionButton("???",100,100)
+
 	val evolutionPanel = new GridPanel(2,2)
 	{
 		contents += evolution1Button
@@ -373,42 +401,14 @@ class Game extends Reactor
 	
 	reactions +=
 	{
-		case ButtonClicked(source) if (source == bulletSpeedButton) =>
-			var t = getSelectedTurret()
-			t.m_bulletSpeed += 10
-			m_player.m_gold -= 10
-			t.init(m_g)
-		case ButtonClicked(source) if (source == bulletPenButton) =>
-			var t = getSelectedTurret()
-			t.m_bulletPenetration += 10
-			m_player.m_gold -= 10
-			t.init(m_g)
-		case ButtonClicked(source) if (source == bulletDmgButton) =>
-			var t = getSelectedTurret()
-			t.m_bulletDamage += 5
-			m_player.m_gold -= 10
-			t.init(m_g)
-		case ButtonClicked(source) if (source == reloadButton) =>
-			var t = getSelectedTurret()
-			t.m_reload -= 5
-			m_player.m_gold -= 10
-			t.init(m_g)
-		case ButtonClicked(source) if (source == evolution1Button) =>
-			getSelectedTurret.m_hp = 0
-			addTurret(evolution1Button.text,getSelectedPos)
-			m_player.m_gold -= 100
-		case ButtonClicked(source) if (source == evolution2Button) =>
-			getSelectedTurret.m_hp = 0
-			addTurret(evolution2Button.text,getSelectedPos)
-			m_player.m_gold -= 100
-		case ButtonClicked(source) if (source == evolution3Button) =>
-			getSelectedTurret.m_hp = 0
-			addTurret(evolution3Button.text,getSelectedPos)
-			m_player.m_gold -= 100
-		case ButtonClicked(source) if (source == evolution4Button) =>
-			getSelectedTurret.m_hp = 0
-			addTurret(evolution4Button.text,getSelectedPos)
-			m_player.m_gold -= 100
+		case ButtonClicked(source) if (source == bulletSpeedButton) => (source).asInstanceOf[StatsButton].buy(this)
+		case ButtonClicked(source) if (source == bulletPenButton) => (source).asInstanceOf[StatsButton].buy(this)
+		case ButtonClicked(source) if (source == bulletDmgButton) => (source).asInstanceOf[StatsButton].buy(this)
+		case ButtonClicked(source) if (source == reloadButton) => (source).asInstanceOf[StatsButton].buy(this)
+		case ButtonClicked(source) if (source == evolution1Button) => (source).asInstanceOf[EvolutionButton].buy(this)
+		case ButtonClicked(source) if (source == evolution2Button) => (source).asInstanceOf[EvolutionButton].buy(this)
+		case ButtonClicked(source) if (source == evolution3Button) => (source).asInstanceOf[EvolutionButton].buy(this)
+		case ButtonClicked(source) if (source == evolution4Button) => (source).asInstanceOf[EvolutionButton].buy(this)
 		case ButtonClicked(source) if (source == sellButton) =>
 			getSelectedTurret.m_hp = 0
 			m_grid.removeTurret(getSelectedPos)
@@ -432,7 +432,7 @@ class Game extends Reactor
 		reloadBar.value = reloadBar.max - t.m_reload + reloadBar.min
 		
 		// Mise à jour des boutons
-		if (t.m_bulletSpeed + 10 <= bulletSpeedBar.max && m_player.m_gold >= 10)
+		if (t.m_bulletSpeed + bulletSpeedButton.m_amount <= bulletSpeedBar.max && m_player.m_gold >= bulletSpeedButton.m_price)
 		{
 			bulletSpeedButton.enabled = true
 		}
@@ -440,7 +440,7 @@ class Game extends Reactor
 		{
 			bulletSpeedButton.enabled = false
 		}
-		if (t.m_bulletPenetration + 10 <= bulletPenBar.max && m_player.m_gold >= 10)
+		if (t.m_bulletPenetration + bulletPenButton.m_amount <= bulletPenBar.max && m_player.m_gold >= bulletPenButton.m_price)
 		{
 			bulletPenButton.enabled = true
 		}
@@ -448,7 +448,7 @@ class Game extends Reactor
 		{
 			bulletPenButton.enabled = false
 		}
-		if (t.m_bulletDamage + 10 <= bulletDmgBar.max && m_player.m_gold >= 10)
+		if (t.m_bulletDamage + bulletDmgButton.m_amount <= bulletDmgBar.max && m_player.m_gold >= bulletDmgButton.m_price)
 		{
 			bulletDmgButton.enabled = true
 		}
@@ -456,7 +456,7 @@ class Game extends Reactor
 		{
 			bulletDmgButton.enabled = false
 		}
-		if (t.m_reload - 5 >= reloadBar.min && m_player.m_gold >= 10)
+		if (t.m_reload - reloadButton.m_amount >= reloadBar.min && m_player.m_gold >= reloadButton.m_price)
 		{
 			reloadButton.enabled = true
 		}
@@ -466,7 +466,7 @@ class Game extends Reactor
 		}
 		
 		// Mise à jour des boutons d'evolution
-		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		if (t.m_exp >= evolution1Button.m_exp && m_player.m_gold >= evolution1Button.m_price)
 		{
 			evolution1Button.enabled = true
 		}
@@ -474,7 +474,7 @@ class Game extends Reactor
 		{
 			evolution1Button.enabled = false
 		}
-		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		if (t.m_exp >= evolution2Button.m_exp && m_player.m_gold >= evolution2Button.m_price)
 		{
 			evolution2Button.enabled = true
 		}
@@ -482,7 +482,7 @@ class Game extends Reactor
 		{
 			evolution2Button.enabled = false
 		}
-		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		if (t.m_exp >= evolution3Button.m_exp && m_player.m_gold >= evolution3Button.m_price)
 		{
 			evolution3Button.enabled = true
 		}
@@ -490,7 +490,7 @@ class Game extends Reactor
 		{
 			evolution3Button.enabled = false
 		}
-		if (t.m_exp >= 100 && m_player.m_gold >= 100)
+		if (t.m_exp >= evolution4Button.m_exp && m_player.m_gold >= evolution4Button.m_price)
 		{
 			evolution4Button.enabled = true
 		}
@@ -498,24 +498,20 @@ class Game extends Reactor
 		{
 			evolution4Button.enabled = false
 		}
-		
+
 		
 		Evolution.evolutions(t.m_upgrade) match
 		{
 			case None =>
-				evolution1Button.text = ""
-				evolution1Button.enabled = false
-				evolution2Button.text = ""
-				evolution2Button.enabled = false
-				evolution3Button.text = ""
-				evolution3Button.enabled = false
-				evolution4Button.text = ""
-				evolution4Button.enabled = false
+				evolution1Button.disable
+				evolution2Button.disable
+				evolution3Button.disable
+				evolution4Button.disable
 			case Some(e) =>
-				evolution1Button.text = e._1
-				evolution2Button.text = e._2
-				evolution3Button.text = e._3
-				evolution4Button.text = e._4
+				evolution1Button.enable(e._1._1,e._1._2)
+				evolution2Button.enable(e._2._1,e._2._2)
+				evolution3Button.enable(e._3._1,e._3._2)
+				evolution4Button.enable(e._4._1,e._4._2)
 		}
 	}
 	
@@ -617,18 +613,18 @@ class Game extends Reactor
 	def newGame : BorderPanel =
 	{	
 		// Création de la grille de jeu
-    	m_grid.initGrid()
-    	m_grid.listenTo(m_grid.mouse.clicks)
+	    	m_grid.initGrid()
+	    	m_grid.listenTo(m_grid.mouse.clicks)
 		m_grid.reactions +=
 		{
 				case MouseClicked(_,p,_,_,_) =>
 					m_grid.m_selected = Some (m_grid.getPosInGrid(new Vect(p.x,p.y)))
 		}
-    	
+
 		// Démarrage de la boucle de jeu dans un thread
-    	new Thread(Loop).start
+    		new Thread(Loop).start
 		// Actualisation des panels dans un thread
-    	new Thread(PanelLoop).start
+    		new Thread(PanelLoop).start
     	
 		return panel
 	}

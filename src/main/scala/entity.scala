@@ -7,7 +7,9 @@ trait Entity
 	var m_offset:Vect // Décalage du haut à gauche de l'image de l'entité par rapport au centre
 	var m_type:String
 	var m_rotation:Double
-	
+	var m_rotationSpeed:Double
+	var m_dmg:Int
+
 	// m_radius correspond à la hitbox de l'entité
 	// Pour l'instant il n'y que des hitboxes circulaires, cela permet de facilement
 	// tester les collisions avec un simple calcul de distances

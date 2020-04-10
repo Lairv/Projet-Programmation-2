@@ -4,6 +4,7 @@ import java.awt.{Graphics2D,Color,Font}
 import java.awt.geom.AffineTransform
 import javax.imageio.ImageIO
 import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
 
 class booleanMatrix(cols:Int, rows:Int)
 {
@@ -22,13 +23,15 @@ class booleanMatrix(cols:Int, rows:Int)
 	}
 }
 
-class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
+class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 {
-	val m_cols = cols
-	val m_rows = rows
+	var m_cols = 0
+	var m_rows = 0
 	val m_cellSize = cellSize
-	var m_map = new booleanMatrix(m_cols,m_rows)
-	var m_entityMap = new booleanMatrix(m_cols,m_rows)
+	val m_mapName = mapName
+	var m_map = new booleanMatrix(0,0)
+	var m_entityMap = new booleanMatrix(0,0)
+	var m_pivotPointGraph = new PivotPointGraph(m_mapName)
 	
 	var m_game = game
 	
@@ -36,23 +39,29 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 	
 	var m_random = scala.util.Random
 	
-	// A modifier en fonction de la carte 
-	var m_pivotPoints = Array(Array(new Vect(-1,3),new Vect(-1,5)),
-							  Array(new Vect(15,3),new Vect(13,5)),
-							  Array(new Vect(13,m_rows),new Vect(15,m_rows)))
-	
-	preferredSize = new Dimension(m_cols * cellSize, m_rows * cellSize)
-	
-	def nextPivotPoint (currPivP:Int) =
+	def barycentre(p1:Vect, p2:Vect) : Vect =
 	{
-		if (currPivP == m_pivotPoints.length - 1)
+		var t = m_random.nextFloat.toDouble
+		return (p1*m_cellSize)*t+(p2*m_cellSize)*(1-t) + (new Vect(m_cellSize/2,m_cellSize/2))
+	}
+	
+	def nextPivotPoint (currPivP:Int) : (Int,Option[Vect]) =
+	{
+		if (currPivP == -1)
+		{	
+			var t = m_random.nextInt(m_pivotPointGraph.m_initials.length)
+			var u = m_pivotPointGraph.m_graph(m_pivotPointGraph.m_initials(t))
+			(m_pivotPointGraph.m_initials(t) ,Some (barycentre(u._1,u._2)))
+		}
+		else if (m_pivotPointGraph.isFinal(currPivP))
 		{
-			None
+			(0,None)
 		}
 		else
 		{
-			var t = m_random.nextFloat.toDouble
-			Some ((m_pivotPoints(currPivP+1)(0)*m_cellSize)*t+(m_pivotPoints(currPivP+1)(1)*m_cellSize)*(1-t) + (new Vect(m_cellSize/2,m_cellSize/2)))
+			var t = m_random.nextInt(m_pivotPointGraph.m_graph(currPivP)._3.length)
+			var u = m_pivotPointGraph.m_graph(m_pivotPointGraph.m_graph(currPivP)._3(t))
+			(m_pivotPointGraph.m_graph(currPivP)._3(t),Some (barycentre(u._1,u._2)))
 		}
 	}
 	
@@ -81,8 +90,33 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 		m_entityMap.ch(p.x,p.y,false)
 	}
 	
+	def isOutOfBound(e : Entity) : Boolean =
+	{
+		var height = m_rows * m_cellSize
+		var width = m_cols * m_cellSize
+		if ((e.m_pos.x - e.m_offset.x > width) || (e.m_pos.x + e.m_offset.x < 0) ||  (e.m_pos.y - e.m_offset.y > height) || (e.m_pos.y + e.m_offset.y < 0)) {return true}
+		else {return false}
+	}
+
+	def readMap(mapName : String) : Unit =
+	{
+		
+		
+	}
+
 	def initGrid () =
 	{
+		// Lecture des tailles de la grille
+		var lines = Source.fromFile("src/main/resources/"+m_mapName+".txt").getLines.toArray
+		m_cols = lines(0).toInt
+		m_rows = lines(0).toInt
+		preferredSize = new Dimension(m_cols * cellSize, m_rows * cellSize)
+
+		// Création des tableau
+		m_map = new booleanMatrix(m_cols,m_rows)
+		m_entityMap = new booleanMatrix(m_cols,m_rows)
+
+		// Initialisation grille
 		for (x <- 0 to m_cols-1)
 		{
 			for (y <- 0 to m_rows-1)
@@ -91,22 +125,16 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 				m_entityMap.ch(x,y,false)
 			}
 		}
+
+		// Lecture Map
+		for (line <- 2 to (lines.length - 1)) {
+			for (i <- 0 to (lines(line).length - 1))
+			{
+				if ((lines(line)(i).toInt -'0') == 1) {m_map.ch(i,line-2,true)}
+			}
+		}
 		
-		// A changer en fonction de la map qu'on veut faire
-		for (y <- 3 to 5)
-		{
-			for (x <- 0 to 15)
-			{
-				m_map.ch(x,y,true)
-			}
-		}
-		for (y <- 6 to 9)
-		{
-			for (x <- 13 to 15)
-			{
-				m_map.ch(x,y,true)
-			}
-		}
+		m_pivotPointGraph.init
 	}
 	
 	def drawGrid(g : Graphics2D) =
@@ -137,11 +165,11 @@ class Grid(cols:Int, rows:Int, cellSize:Int, game:Game)extends Component
 		g.setColor(Color.black)
 		for (i <- 1 to m_cols)
 		{
-			g.drawLine(i*m_cellSize, 0, i*m_cellSize, rows * cellSize)
+			g.drawLine(i*m_cellSize, 0, i*m_cellSize, m_rows * cellSize)
 		}
 		for (i <- 1 to m_rows)
 		{
-			g.drawLine(0, i*m_cellSize, cols * m_cellSize, i*m_cellSize)
+			g.drawLine(0, i*m_cellSize, m_cols * m_cellSize, i*m_cellSize)
 		}
 		
 	}
