@@ -19,7 +19,18 @@ trait Turret extends Entity
 	var m_baseSpeed = 0
 	var m_speed = 0
 	
+	var m_maxDroneCount = 0
 	var m_droneCount = 0
+	
+	def possibleDroneSummon():Boolean =
+	{
+		return (m_droneCount < m_maxDroneCount)
+	}
+	
+	def updateDroneCount(c : Int) =
+	{
+		m_droneCount += c
+	}
 	
 	def rotateToward(e : Entity):Unit =
 	{	
@@ -66,6 +77,7 @@ trait Turret extends Entity
 				}
 		}
 	}
+	
 	def gainExp(c : Int) =
 	{
 		m_exp += c
