@@ -19,6 +19,8 @@ trait Turret extends Entity
 	var m_baseSpeed = 0
 	var m_speed = 0
 	
+	var m_droneCount = 0
+	
 	def rotateToward(e : Entity):Unit =
 	{	
 		var inter : Vect = (e.m_pos-m_pos)
