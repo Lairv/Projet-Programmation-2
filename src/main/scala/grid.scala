@@ -72,7 +72,17 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 	
 	def isAvailable(p : Vect) : Boolean =
 	{
-		!(m_map.at(p.x,p.y)) && !(m_entityMap.at(p.x,p.y))
+		!(m_entityMap.at(p.x,p.y))
+	}
+	
+	def isTurretGround(p : Vect) : Boolean =
+	{
+		!(m_map.at(p.x,p.y))
+	}
+	
+	def isEnnemyGround(p : Vect) : Boolean =
+	{
+		m_map.at(p.x,p.y)
 	}
 	
 	def isTurret(p : Vect) : Boolean =
@@ -96,12 +106,6 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 		var width = m_cols * m_cellSize
 		if ((e.m_pos.x - e.m_offset.x > width) || (e.m_pos.x + e.m_offset.x < 0) ||  (e.m_pos.y - e.m_offset.y > height) || (e.m_pos.y + e.m_offset.y < 0)) {return true}
 		else {return false}
-	}
-
-	def readMap(mapName : String) : Unit =
-	{
-		
-		
 	}
 
 	def initGrid () =
@@ -211,7 +215,7 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 			case Some(p) =>
 				if (getPosInGrid(t.m_pos) == p)
 				{
-					g.setColor(Color.green)
+					g.setColor(Color.red)
 					g.drawOval(t.m_pos.x - t.m_range,
 							 t.m_pos.y - t.m_range,
 							 2*t.m_range,
@@ -239,6 +243,8 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 				g.drawImage(i.m_sprite,at,null)
 			}
 			
+			i.customAnimation(g)
+
 			// Partie pour dessiner les barres de vie
 			if (i.m_type == "ennemy")
 			{

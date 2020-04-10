@@ -15,6 +15,9 @@ trait Turret extends Entity
 	var m_dmg = 10
 	var m_autoTarget = true
 	var m_rotationSpeed = math.Pi / 360
+
+	var m_baseSpeed = 0
+	var m_speed = 0
 	
 	def rotateToward(e : Entity):Unit =
 	{	
@@ -64,6 +67,47 @@ trait Turret extends Entity
 	def gainExp(c : Int) =
 	{
 		m_exp += c
+	}
+}
+
+class Smasher(p : Vect) extends Entity
+{
+	var m_sprite = ImageIO.read(getClass().getResource("Smasher.png"))
+	var m_maxHp = 100
+	var m_hp = 100
+	var m_pos = p
+	var m_offset = new Vect(40,40)
+
+	var m_radius = 35
+	var m_rotation = 0
+	
+
+
+	var m_type = "standingturret"
+	var m_dmg = 10
+	var m_autoTarget = false
+	var m_rotationSpeed = math.Pi / 360
+
+	var m_baseSpeed = 0
+	var m_speed = 0
+	
+	def init(g:Game) = {}
+
+	def update(g : Game):Unit =
+	{
+		m_rotation += m_rotationSpeed
+		for (e <- g.getCollisions(this,"ennemy"))
+		{
+			if (m_hp > 0)
+			{
+				e.rmvHp(m_dmg)
+				if (e.m_hp <= 0 && e.m_hp > -m_dmg)
+				{
+					g.m_player.m_gold += e.asInstanceOf[Ennemy].m_goldReward
+				}
+			}
+			m_hp -= e.m_dmg
+		}
 	}
 }
 

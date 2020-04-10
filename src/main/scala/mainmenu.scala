@@ -11,6 +11,7 @@ object MainMenu
 		text = "Start"
 	}
 
+	/*
 	val map1Button = new Button 
 	{
 		preferredSize = new Dimension(200, 200)
@@ -32,12 +33,12 @@ object MainMenu
 		layout(map2Button) = BorderPanel.Position.Center
 		layout(map3Button) = BorderPanel.Position.East
 	}
-
+	*/
 
 	val panel = new BorderPanel
 	{
 		preferredSize = new Dimension(600,600)
 		layout(startButton) = BorderPanel.Position.Center
-		layout(mapPanel) = BorderPanel.Position.South
+		// layout(mapPanel) = BorderPanel.Position.South
 	}
 }

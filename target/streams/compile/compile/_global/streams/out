@@ -1,7 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/grid.scala:58:47: value initials is not a member of PivotPointGraph[0m
-[0m[[0m[31merror[0m] [0m[0m			var t = m_random.nextInt(m_pivotPointGraph.initials.length)[0m
-[0m[[0m[31merror[0m] [0m[0m			                                           ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/grid.scala:59:56: value initials is not a member of PivotPointGraph[0m
-[0m[[0m[31merror[0m] [0m[0m			var u = m_pivotPointGraph.m_graph(m_pivotPointGraph.initials(t))[0m
-[0m[[0m[31merror[0m] [0m[0m			                                                    ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/turret.scala:73:7: class Smasher needs to be abstract, since method init in trait Entity of type (g: Game)Unit is not defined[0m
+[0m[[0m[31merror[0m] [0m[0mclass Smasher(p : Vect) extends Entity[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

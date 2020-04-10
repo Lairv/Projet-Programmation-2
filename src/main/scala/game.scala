@@ -14,9 +14,9 @@ class Game extends Reactor
 	
 	var m_waves = Array(
 					new Wave(Array(
-								("ysquare",2,0),
-								("ysquare",2,2000),
-								("ysquare",2,4000)
+								("ysquare",3,0),
+								("ysquare",3,2000),
+								("ysquare",3,4000)
 								),this
 							),
 					new Wave(Array(
@@ -40,17 +40,10 @@ class Game extends Reactor
 								),this
 							),
 					new Wave(Array(
-								("ysquare",5,0),
-								("ysquare",5,2000),
-								("rtriangle",3,3000),
-								("ysquare",5,4000),
-								("rtriangle",3,5000),
-								("ysquare",5,6000),
-								("rtriangle",3,7000),
-								("ysquare",5,8000),
-								("ysquare",5,10000),
-								("ysquare",10,12000),
-								("ysquare",10,14000)
+								("bpentagon",2,0),
+								("ysquare",10,100),
+								("gpentagon",2,5000),
+								("ysquare",10,5000)
 								),this
 							),
 					new Wave(Array(
@@ -68,6 +61,15 @@ class Game extends Reactor
 								),this
 							),
 					new Wave(Array(
+								("bpentagon",5,0),
+								("gpentagon",10,0),
+								("ysquare",20,100),
+								("rtriangle",20,200),
+								("ysquare",20,500),
+								("rtriangle",20,600),
+								),this
+							),
+					new Wave(Array(
 								("apentagon",1,0),
 								("bpentagon",3,5000),
 								("bpentagon",5,10000),
@@ -77,7 +79,7 @@ class Game extends Reactor
 								("apentagon",5,0),
 								("apentagon",10,5000),
 								("apentagon",50,10000),
-								("apentagon",500,15000),
+								("apentagon",200,15000),
 								),this
 							)
 				)
@@ -136,6 +138,12 @@ class Game extends Reactor
 	
 	def addTurret(turretType : String, p : Vect) : Unit =
 	{
+		if (turretType == "smasher")
+		{
+			var i = new Smasher(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
+			m_entityList += i
+			m_grid.putTurret(p)
+		}
 		if (turretType == "tank")
 		{
 			var i = new Tank(p*m_grid.m_cellSize + new Vect(m_grid.m_cellSize/2,m_grid.m_cellSize/2))
@@ -237,6 +245,15 @@ class Game extends Reactor
 				addEntity(i)
 			}
 		}
+		if (ennemyType == "gpentagon")
+		{
+			for (k <- 1 to number)
+			{
+				var i = new GPentagon
+				i.init(this)
+				addEntity(i)
+			}
+		}
 		if (ennemyType == "apentagon")
 		{
 			for (k <- 1 to number)
@@ -254,7 +271,7 @@ class Game extends Reactor
 		{
 			for (e <- m_entityList)
 			{
-				if (m_grid.getPosInGrid(e.m_pos) == p)
+				if (m_grid.getPosInGrid(e.m_pos) == p && e.m_type == "turret")
 				{
 					return Some (e.asInstanceOf[Turret])
 				}
@@ -269,12 +286,12 @@ class Game extends Reactor
 		return (inter.length <= (e1.m_radius + e2.m_radius))
 	}
 
-	def getCollisions(e : Entity) : ArrayBuffer[Entity] =
+	def getCollisions(e:Entity, entityType:String) : ArrayBuffer[Entity] =
 	{
 		var collideList = ArrayBuffer[Entity]()
 		for (i <- 0 to m_entityList.length-1)
 		{
-			if (collide(e,m_entityList(i)) && (m_entityList(i).m_type == "ennemy"))
+			if (collide(e,m_entityList(i)) && (m_entityList(i).m_type == entityType))
 			{
 				 collideList += m_entityList(i)
 			}
@@ -282,6 +299,19 @@ class Game extends Reactor
 		return collideList
 	}
 	
+	def getInRange(e:Entity,range:Int) : ArrayBuffer[Entity] =
+	{
+		var inRangeList = ArrayBuffer[Entity]()
+		for (i <- 0 to m_entityList.length-1)
+		{
+			if (((e.m_pos-m_entityList(i).m_pos).length <= range) && (m_entityList(i).m_type == "ennemy"))
+			{
+				 inRangeList += m_entityList(i)
+			}
+		}
+		return inRangeList
+	}
+
 	// À n'appeler que lorsqu'on sait qu'une tourelle est sélectionnée
 	def getSelectedTurret() : Turret =
 	{
@@ -419,6 +449,7 @@ class Game extends Reactor
 	// Panneau général qui est modifié quand on sélectionne une tourelle
 	val modifiablePanel = new GridPanel(1,1)
 	{
+		preferredSize = new Dimension(300,200)
 		contents += nonSelectedPanel
 	}
 	
@@ -598,7 +629,14 @@ class Game extends Reactor
 					else if (m_grid.isAvailable(p))
 					{
 						m_player.m_gold -= 50
-						addTurret("tank",p)
+						if (m_grid.isTurretGround(p))
+						{
+							addTurret("tank",p)
+						}
+						else if (m_grid.isEnnemyGround(p))
+						{
+							addTurret("smasher",p)
+						}
 					}
 					else
 					{
