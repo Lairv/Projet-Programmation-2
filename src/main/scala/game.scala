@@ -4,9 +4,9 @@ import java.awt.{Graphics2D,Color}
 import javax.imageio.ImageIO
 import scala.collection.mutable.ArrayBuffer
 
-class Game extends Reactor
+class Game(map:String) extends Reactor
 {
-	val m_grid = new Grid("map1",50,this)
+	val m_grid = new Grid(map,50,this)
 	var m_entityList = ArrayBuffer[Entity]()
 	var m_deadEntities = ArrayBuffer[Int]()
 	var m_g = this

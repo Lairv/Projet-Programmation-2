@@ -113,7 +113,7 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 		// Lecture des tailles de la grille
 		var lines = Source.fromFile("src/main/resources/"+m_mapName+".txt").getLines.toArray
 		m_cols = lines(0).toInt
-		m_rows = lines(0).toInt
+		m_rows = lines(1).toInt
 		preferredSize = new Dimension(m_cols * cellSize, m_rows * cellSize)
 
 		// Création des tableau
@@ -137,7 +137,6 @@ class Grid(mapName:String, cellSize:Int, game:Game)extends Component
 				if ((lines(line)(i).toInt -'0') == 1) {m_map.ch(i,line-2,true)}
 			}
 		}
-		
 		m_pivotPointGraph.init
 	}
 	

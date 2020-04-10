@@ -11,34 +11,26 @@ object MainMenu
 		text = "Start"
 	}
 
-	/*
 	val map1Button = new Button 
 	{
 		preferredSize = new Dimension(200, 200)
-		text = "Map 1"
+		text = "Carte facile"
 	}
 	val map2Button = new Button 
 	{
 		preferredSize = new Dimension(200, 200)
-		text = "Map 2"
-	}
-	val map3Button = new Button 
-	{
-		preferredSize = new Dimension(200, 200)
-		text = "Map 3"
+		text = "Carte difficile"
 	}
 	val mapPanel = new BorderPanel
 	{
 		layout(map1Button) = BorderPanel.Position.West
 		layout(map2Button) = BorderPanel.Position.Center
-		layout(map3Button) = BorderPanel.Position.East
 	}
-	*/
 
 	val panel = new BorderPanel
 	{
-		preferredSize = new Dimension(600,600)
+		preferredSize = new Dimension(400,400)
 		layout(startButton) = BorderPanel.Position.Center
-		// layout(mapPanel) = BorderPanel.Position.South
+		layout(mapPanel) = BorderPanel.Position.South
 	}
 }
