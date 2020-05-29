@@ -4,85 +4,21 @@ import java.awt.{Graphics2D,Color}
 import javax.imageio.ImageIO
 import scala.collection.mutable.ArrayBuffer
 
-class Game(map:String) extends Reactor
+class Game(map:String, waves:String) extends Reactor
 {
 	val m_grid = new Grid(map,50,this)
 	var m_entityList = ArrayBuffer[Entity]()
 	var m_deadEntities = ArrayBuffer[Int]()
 	var m_g = this
 	var m_player = new Player
+	var m_duringWave = false
+	var m_testIfEndWave = false
 	
-	var m_waves = Array(
-					new Wave(Array(
-								("ysquare",3,0),
-								("ysquare",3,2000),
-								("ysquare",3,4000)
-								),this
-							),
-					new Wave(Array(
-								("ysquare",5,0),
-								("ysquare",5,5000),
-								("ysquare",5,10000),
-								("ysquare",5,12000),
-								("ysquare",5,14000),
-								("rtriangle",1,18000)
-								),this
-							),
-					new Wave(Array(
-								("ysquare",5,0),
-								("ysquare",5,2000),
-								("ysquare",5,4000),
-								("ysquare",5,6000),
-								("ysquare",5,8000),
-								("ysquare",5,10000),
-								("ysquare",10,12000),
-								("ysquare",10,14000)
-								),this
-							),
-					new Wave(Array(
-								("bpentagon",2,0),
-								("ysquare",10,100),
-								("gpentagon",2,5000),
-								("ysquare",10,5000)
-								),this
-							),
-					new Wave(Array(
-								("ysquare",5,0),
-								("ysquare",5,2000),
-								("rtriangle",3,3000),
-								("ysquare",5,4000),
-								("rtriangle",3,5000),
-								("ysquare",5,6000),
-								("rtriangle",3,7000),
-								("bpentagon",1,8000),
-								("ysquare",5,10000),
-								("bpentagon",3,12000),
-								("ysquare",10,14000)
-								),this
-							),
-					new Wave(Array(
-								("bpentagon",5,0),
-								("gpentagon",10,0),
-								("ysquare",20,100),
-								("rtriangle",20,200),
-								("ysquare",20,500),
-								("rtriangle",20,600),
-								),this
-							),
-					new Wave(Array(
-								("apentagon",1,0),
-								("bpentagon",3,5000),
-								("bpentagon",5,10000),
-								),this
-							),
-					new Wave(Array(
-								("apentagon",5,0),
-								("apentagon",10,5000),
-								("apentagon",50,10000),
-								("apentagon",200,15000),
-								),this
-							)
-				)
+	var m_mainThread = new Thread(Loop)
+	var m_panelThread = new Thread(PanelLoop)
+
+	var m_waves = ReadWaves.readWaves(waves,this)
+
 	var m_waveCounter = 0			
 	
 	
@@ -94,6 +30,10 @@ class Game(map:String) extends Reactor
 			{
 				this.synchronized
 				{
+					// On regarde si le joueur a gagné / perdu
+					if (m_player.isDead()) {lose()}
+					else if ((m_waveCounter >= m_waves.length) && !m_duringWave) {win()}
+
 					// On update toutes les entitées
 					m_deadEntities = ArrayBuffer[Int]()
 					for (i <- 0 to m_entityList.length-1)
@@ -104,10 +44,25 @@ class Game(map:String) extends Reactor
 							m_deadEntities += i
 						}
 					}
+					
 					// On enlève les entitées mortes
 					for (i <- m_deadEntities.length-1 to 0 by -1)
 					{
 						m_entityList.remove(m_deadEntities(i))
+					}
+
+					// On teste si la vague est finie
+					if (m_testIfEndWave)
+					{
+						m_duringWave = false
+						for (i <- 0 to m_entityList.length-1)
+						{
+							if (m_entityList(i).m_type == "ennemy")
+							{
+								m_duringWave = true
+							}
+						}
+						if (!m_duringWave) {m_testIfEndWave = false; m_waveCounter += 1}
 					}
 					
 					// On affiche tout 
@@ -119,6 +74,22 @@ class Game(map:String) extends Reactor
 		}
 	}
 	
+	def win() : Unit =
+	{
+		textOutput.foreground = Color.green
+		textOutput.text = "C'est gagné"
+		m_mainThread.join()
+		m_panelThread.join()
+	}
+
+	def lose() : Unit =
+	{
+		textOutput.foreground = Color.red
+		textOutput.text = "C'est perdu"
+		m_mainThread.join()
+		m_panelThread.join()
+	}
+
 	def giveTargetToTurret(t : Turret) : Option[Entity]=
 	{
 		for (i <- m_entityList)
@@ -575,6 +546,7 @@ class Game(map:String) extends Reactor
 			{
 				this.synchronized
 				{
+					sendWaveButton.enabled = !m_duringWave
 					updateModifiablePanel()
 					modifiablePanel.repaint
 					modifiablePanel.revalidate
@@ -613,7 +585,7 @@ class Game(map:String) extends Reactor
 			else
 			{
 				m_waves(m_waveCounter).sendWave
-				m_waveCounter += 1
+				m_duringWave = true
 			}
 			
 		case ButtonClicked(source) if (source == addTurretButton) =>
@@ -660,9 +632,9 @@ class Game(map:String) extends Reactor
 		}
 
 		// Démarrage de la boucle de jeu dans un thread
-    		new Thread(Loop).start
+    		m_mainThread.start
 		// Actualisation des panels dans un thread
-    		new Thread(PanelLoop).start
+    		m_panelThread.start
     	
 		return panel
 	}
