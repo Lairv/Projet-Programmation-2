@@ -6,7 +6,7 @@ class entité
 - position
 - dégats
 
-	sous class tourelles
+	sous class turret
 
 	- (cannon * pos * angle) list
 	- reload level
@@ -33,7 +33,7 @@ class entité
 
 	sous class ammo
 
-		- provenance (cannon)
+		- provenance (turret)
 		- direction
 		- vitesse
 

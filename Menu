@@ -1,0 +1,14 @@
+Menu principal : sélection de map + bouton lancer
+
+Sur une map :
+- bouton lancer une vague
+- affichage de la thune, des vies du joueur en haut à droite
+
+à la sélection d'une case vacante :
+- ajout d'un bouton "Ajouter Tank"
+
+à la sélection d'une case occupée :
+- affichage de l'exp de la tour
+- ajout de 4 boutons pour les 4 améliorations ("bullet speed", "bullet penetration", "bullet damage", "reload")
+- ajout de jusqu'à 4 boutons pour les évolutions disponibles
+- ajout d'un bouton vendre tout en bas

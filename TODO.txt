@@ -1,6 +1,7 @@
 Dans l'ordre d'importance :
+- Modifier les booleanMatrix OK
 - Ajouter un système de joueur, avec des PV, des golds
-- Ajouter un système de "vagues", que l'on peut envoyer en cliquant sur un bouton
+- Ajouter un système de "vagues", que l'on peut envoyer en cliquant sur un bouton OK
 - Ajouter le système d'amélioration des tourelles, avec des menus qui s'affichent à la sélection d'une entité
 - Ajouter un système pour créer facilement des maps, par exemple en lisant dans un fichier de la forme :
 
@@ -14,6 +15,6 @@ Dans l'ordre d'importance :
 									11111111110000111000
 									00000000000000111000
 									00000000000000111000
-									
-									
+
+
 - Ajouter un système de collision pour les tirs

@@ -1,0 +1,11 @@
+ysquare 50 0 5000
+///
+rtriangle 50 0 5000
+///
+bpentagon 10 0 5000
+gpentagon 10 0 5000
+ysquare 100 0 5000
+rtriangle 100 0 5000
+///
+apentagon 100 0 10000
+///

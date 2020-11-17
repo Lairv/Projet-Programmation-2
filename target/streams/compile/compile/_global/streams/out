@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/loic/Bureau/Cours/L3/ProjetProg2/Projet-Programmation-2/src/main/scala/grid.scala:180:6: not found: value drawOval[0m
-[0m[[0m[31merror[0m] [0m[0m					drawOval(t.m_pos.x - t.m_range,[0m
-[0m[[0m[31merror[0m] [0m[0m					^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/loic/Documents/Cours/Projet Prog 2/Projet-Programmation-2/src/main/scala/game.scala:86:24: scala.swing.Color does not take parameters[0m
+[0m[[0m[31merror[0m] [0m[0m		textOutput.foreground(Color.red)[0m
+[0m[[0m[31merror[0m] [0m[0m		                     ^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

@@ -1,3 +1,6 @@
+import java.awt.{Graphics2D,Color,Font}
+import java.awt.geom.AffineTransform
+
 trait Entity
 {
 	var m_sprite:java.awt.image.BufferedImage
@@ -7,7 +10,11 @@ trait Entity
 	var m_offset:Vect // Décalage du haut à gauche de l'image de l'entité par rapport au centre
 	var m_type:String
 	var m_rotation:Double
-	
+	var m_rotationSpeed:Double
+	var m_dmg:Int // Dégats des collisions
+	var m_baseSpeed:Double // Vitesse initiale pour pouvoir la remettre à zero	
+	var m_speed:Double
+
 	// m_radius correspond à la hitbox de l'entité
 	// Pour l'instant il n'y que des hitboxes circulaires, cela permet de facilement
 	// tester les collisions avec un simple calcul de distances
@@ -21,6 +28,8 @@ trait Entity
 		m_hp -= x
 	}
 	
+	def customAnimation(g:Graphics2D):Unit = {}
+
 	def isDead():Boolean =
 	{
 		return (m_hp <= 0)
